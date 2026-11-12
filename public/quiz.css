@@ -51,6 +51,8 @@ input[type="radio"] { accent-color: var(--teal); width: 20px; height: 20px; marg
 .species label small { font-size: 11px; color: var(--muted); font-weight: 400; margin-top: 4px; }
 .species-symbol { font-size: 32px; justify-self: center; line-height: 1; }
 .species-symbol img { width: 36px; height: 36px; display: block; image-rendering: pixelated; }
+.species-symbol img.pet-option { width: 48px; height: 48px; border-radius: 8px; image-rendering: auto; }
+.pet-portrait { display: block; width: 100%; height: auto; border-radius: 16px; }
 .blobby-career { display: block; width: 100%; max-width: 400px; height: auto; margin-inline: auto; image-rendering: pixelated; }
 .blobby-interview { display: block; width: 100%; height: auto; image-rendering: pixelated; }
 .primary, .secondary { border-radius: 10px; padding: 15px 24px; min-height: 48px; font-weight: 600; transition: transform .18s ease, box-shadow .18s ease; text-align: center; }
@@ -59,7 +61,6 @@ input[type="radio"] { accent-color: var(--teal); width: 20px; height: 20px; marg
 .primary:hover, .secondary:hover { transform: translateY(-2px); box-shadow: 0 6px 12px #202b4210; }
 .hero-card { background: #f5efdf; border: 1px solid var(--line); border-radius: 24px; padding: 16px; margin: 0; transform: rotate(2deg); box-shadow: 10px 16px 0 #e7e9dc; position: relative; }
 .corner-sticker { position: absolute; z-index: 1; right: -12px; top: -24px; background: #f8c9d6; color: #783950; border: 4px solid white; border-radius: 50%; width: 120px; height: 120px; display: grid; place-content: center; text-align: center; font-size: 12px; line-height: 1.5; font-weight: 600; transform: rotate(12deg); }
-.portrait { aspect-ratio: 1; background-image: url("assets/pet-careers.png"); background-size: 300% 300%; background-position: calc(var(--column) * 50%) calc(var(--row) * 50%); border-radius: 16px; }
 figcaption { padding: 16px 12px 12px; display: grid; gap: 10px; }
 figcaption strong { font-size: 24px; letter-spacing: -.03em; }
 figcaption > span:last-child { color: var(--muted); }
@@ -80,9 +81,8 @@ progress::-webkit-progress-value { background: var(--teal); border-radius: 10px;
 .result-intro { max-width: 800px; }
 .result-card { display: grid; grid-template-columns: minmax(200px, 1fr) 1.1fr; border: 1px solid var(--line); border-radius: 24px; overflow: hidden; margin-top: 32px; background: white; }
 .result-visual { position: relative; display: grid; align-content: center; background: repeating-linear-gradient(-30deg, #f8edda 0 24px, #f9f1e2 24px 48px); padding: 36px 20px 20px; min-width: 0; }
-.result-rosette { position: absolute; top: 16px; left: 20px; transform: rotate(-5deg); background: #dcebd5; color: #36573b; border: 3px solid white; padding: 10px 16px; font-size: 11px; font-weight: 600; line-height: 1.4; border-radius: 12px; }
+.result-rosette { position: absolute; z-index: 1; top: 16px; left: 20px; transform: rotate(-5deg); background: #dcebd5; color: #36573b; border: 3px solid white; padding: 10px 16px; font-size: 11px; font-weight: 600; line-height: 1.4; border-radius: 12px; }
 .pet-sticker { animation: hired .5s ease-out both; }
-.prepared-art { width: 112px; border: 4px solid white; box-shadow: 0 4px 12px #202b4220; justify-self: end; margin-top: -52px; transform: rotate(5deg); }
 .result-copy { padding: 36px; display: flex; flex-direction: column; justify-content: center; }
 .result-copy h2 { font-size: clamp(30px, 3.2vw, 46px); line-height: 1.1; letter-spacing: -.04em; margin: 8px 0 20px; }
 .result-copy ul { padding-left: 20px; color: var(--muted); line-height: 1.8; }
@@ -115,5 +115,4 @@ footer { border-top: 1px solid var(--line); }
 	header, footer, .actions, .skip { display: none; }
 	main { padding: 0; }
 	.result-card { break-inside: avoid; }
-	.portrait { print-color-adjust: exact; }
 }

@@ -34,7 +34,11 @@
 			image.alt = '';
 			symbol.append(image);
 		} else {
-			symbol.textContent = pet.symbol;
+			const image = document.createElement('img');
+			image.src = `assets/pet-portraits/${pet.id}-cardboard.webp`;
+			image.alt = '';
+			image.className = 'pet-option';
+			symbol.append(image);
 		}
 		const text = document.createElement('span');
 		const title = document.createElement('strong');
@@ -45,6 +49,22 @@
 		label.append(input, symbol, text);
 		return label;
 	}));
+
+	function updateWelcomePreview() {
+		const selected = byId('species-options').querySelector('input:checked').value;
+		const preview = byId('welcome-portrait');
+		if (selected === 'blobby') {
+			preview.src = 'assets/blobby-careers/cardboard.png';
+			preview.className = 'blobby-career';
+			preview.alt = BlobbyOutfits.cardboard.description;
+		} else {
+			preview.src = `assets/pet-portraits/${selected}-cardboard.webp`;
+			preview.className = 'pet-portrait';
+			preview.alt = `Original storybook illustration of a ${selected} in a navy suit, supervising a cardboard box.`;
+		}
+	}
+
+	byId('species-options').addEventListener('change', updateWelcomePreview);
 
 	function renderSticker(target, career) {
 		const pet = species[speciesIndex];
@@ -69,15 +89,15 @@
 			target.replaceChildren(image);
 			return;
 		}
-		const ears = {
-			cat: '<path d="M118 160 105 68 180 119M242 119 315 68 302 160" fill="#edb275"/>',
-			dog: '<ellipse cx="113" cy="170" rx="33" ry="76" fill="#ba784c" transform="rotate(18 113 170)"/><ellipse cx="307" cy="170" rx="33" ry="76" fill="#ba784c" transform="rotate(-18 307 170)"/>'
-		};
-		const fills = { cat: '#f3c58d', dog: '#e9bc91' };
-		const character = `${ears[pet.id]}<ellipse cx="210" cy="212" rx="111" ry="98" fill="${fills[pet.id]}"/><ellipse cx="210" cy="286" rx="66" ry="54" fill="${fills[pet.id]}"/><ellipse cx="168" cy="208" rx="8" ry="11" fill="#283747"/><ellipse cx="252" cy="208" rx="8" ry="11" fill="#283747"/><ellipse cx="145" cy="232" rx="18" ry="10" fill="#f0a3ab" opacity=".65"/><ellipse cx="275" cy="232" rx="18" ry="10" fill="#f0a3ab" opacity=".65"/><path d="m201 229 9 8 9-8Z" fill="#ae6b70"/><path d="M210 238q-8 17-21 5m21-5q8 17 21 5" fill="none" stroke="#6b554d" stroke-width="3" stroke-linecap="round"/><path d="m183 292 27 12 27-12v30l-27-13-27 13Z" fill="#347e75"/><circle cx="210" cy="306" r="7" fill="#efb95c"/>`;
-		target.innerHTML = `<svg viewBox="0 0 420 400" aria-hidden="true" focusable="false"><circle cx="210" cy="206" r="154" fill="#fff5d5"/><g fill="#e8b44e"><path d="m65 92 5 13 14 5-14 5-5 13-5-13-14-5 14-5Z"/><path d="m354 265 5 13 14 5-14 5-5 13-5-13-14-5 14-5Z"/></g><ellipse cx="210" cy="346" rx="110" ry="13" fill="#315744" opacity=".1"/>${character}<circle cx="320" cy="300" r="52" fill="white" stroke="#d4dfcb" stroke-width="2"/><text x="320" y="319" text-anchor="middle" font-size="54" font-family="Segoe UI Emoji, sans-serif">${career ? career.symbol : '🐾'}</text></svg>`;
-		const description = `Illustrated ${pet.label.toLowerCase()}`;
-		target.setAttribute('aria-label', career ? `${description} with a ${career.title} career badge.` : `${description} at the career interview.`);
+		const image = document.createElement('img');
+		image.src = `assets/pet-portraits/${pet.id}-${career ? career.id : 'cardboard'}.webp`;
+		image.className = 'pet-portrait';
+		image.width = image.height = 480;
+		image.alt = '';
+		target.replaceChildren(image);
+		target.setAttribute('aria-label', career
+			? `Storybook illustration of a ${pet.id === 'cat' ? 'fluffy orange cat' : 'golden retriever dog'} dressed as ${career.title}, with job-specific clothing and props.`
+			: `Illustrated ${pet.id} in a navy suit at the career interview.`);
 	}
 
 	function show(view, focusId) {
@@ -128,15 +148,6 @@
 		byId('offer').textContent = career.offer;
 		const art = byId('result-art');
 		renderSticker(art, career);
-		const preparedColumn = { cardboard: 0, snacks: 1, surveillance: 2 }[career.id];
-		const preparedRow = { cat: 0, dog: 1 }[species[speciesIndex].id];
-		const prepared = byId('prepared-art');
-		prepared.hidden = preparedColumn === undefined || preparedRow === undefined;
-		if (!prepared.hidden) {
-			prepared.style.setProperty('--column', preparedColumn);
-			prepared.style.setProperty('--row', preparedRow);
-			prepared.setAttribute('aria-label', `Prepared AI illustration of a ${species[speciesIndex].label.toLowerCase()} working as ${career.title}.`);
-		}
 		byId('qualifications').replaceChildren(...career.traits.map(trait => {
 			const item = document.createElement('li');
 			item.textContent = trait;
@@ -195,6 +206,7 @@
 		speciesIndex = 0;
 		petName = '';
 		byId('start-form').reset();
+		updateWelcomePreview();
 		show('welcome', 'pet-name');
 	});
 	byId('start-controls').disabled = false;

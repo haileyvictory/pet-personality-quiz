@@ -51,7 +51,7 @@ startup when JavaScript is unavailable.
 Each of the 24 careers has its own composed pixel-art image: an official
 VS Code-style hat, one of six body palettes, and original job-specific props.
 There are no emoji badges on Blobby's results. Outfits are quiz illustrations,
-not actual VS Code achievement unlocks. Cat and dog results are unchanged.
+not actual VS Code achievement unlocks.
 
 To rebuild the committed PNGs after editing the outfit definitions or pixel art:
 
@@ -65,6 +65,27 @@ the original body geometry, uses the official idle hat anchors, and draws on an
 eight-pixel grid with opaque pixels and transparent backgrounds. Runtime pages
 load the finished static PNGs; no canvas, image service, or build tool is needed
 to take the quiz.
+
+## Cat and dog portraits
+
+All 24 careers have a full-size storybook illustration for each animal.
+The six original box executive, snack inspector, and neighborhood lookout
+portraits are preserved as the main art for those jobs. The other 42 portraits
+were prepared in the same warm illustrated style. Selection cards and the
+welcome preview show the selected animal, and interview mascots use portraits
+rather than generic vector stickers.
+
+The committed 480-pixel WebP images live in `public/assets/pet-portraits/`.
+No image service is called at runtime. To import reviewed four-column,
+six-row illustration sheets locally, run:
+
+```sh
+node scripts/import-portraits.cjs path/to/cat-sheet.png path/to/dog-sheet.png
+```
+
+The importer always takes the original six portraits from `pet-careers.png`,
+not from newly generated sheets. Review every exported crop before publishing.
+Browser tests exercise all 72 species/career combinations on desktop and mobile.
 
 ## Privacy
 

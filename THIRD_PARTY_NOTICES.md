@@ -34,9 +34,16 @@ for this quiz. It is not a photograph of a person or a user's pet. The image
 atlas is bundled locally; no image-generation service is called by the app.
 Nonessential embedded metadata is removed from the distributed PNG.
 
-## Code and vector stickers
+`public/assets/pet-portraits/` contains 48 optimized WebP illustrations:
+six crops of the original cat/dog atlas and 42 newly prepared AI illustrations
+matching its warm storybook style. The original snack-inspector cat, not the
+incorrect dog cell in the newly generated cat contact sheet, is used for
+`cat-snacks.webp`. Only reviewed individual portraits are distributed; the
+generated contact sheets are not included. Re-encoding removes source metadata.
 
-The quiz code and vector pet stickers originated in the standalone quiz
+## Code
+
+The quiz code originated in the standalone quiz
 prototype. Existing Microsoft copyright and MIT notices are preserved.
 No VS Code editor implementation, credentials, presentation, session history,
 or personal configuration is included.

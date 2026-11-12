@@ -63,12 +63,13 @@ test('Blobby leads, supports keyboard selection, and completes a private, replay
 test('cat and dog artwork loads, and the page fits narrow screens and reduced motion', async ({ page }) => {
 	await page.emulateMedia({ reducedMotion: 'reduce' });
 	await page.goto('/');
-	await expect(page.locator('.species-symbol img')).toBeVisible();
-	expect(await page.locator('.species-symbol img').evaluate(image => image.complete && image.naturalWidth > 0)).toBe(true);
+	await expect(page.locator('.species-symbol img').first()).toBeVisible();
+	expect(await page.locator('.species-symbol img').evaluateAll(images => images.every(image => image.complete && image.naturalWidth > 0))).toBe(true);
 	const artResponse = await page.request.get('assets/pet-careers.png');
 	expect(artResponse.ok()).toBe(true);
 	for (const pet of ['cat', 'dog']) {
 		await page.locator(`#species-options input[value="${pet}"]`).check();
+		await expect(page.locator('#welcome-portrait')).toHaveAttribute('src', `assets/pet-portraits/${pet}-cardboard.webp`);
 		await page.getByRole('button', { name: 'Begin the paw-formance review' }).click();
 		await expect(page.locator('#interview-mascot')).toHaveAttribute('aria-label', new RegExp(pet));
 		for (let index = 0; index < 6; index++) {
@@ -79,13 +80,14 @@ test('cat and dog artwork loads, and the page fits narrow screens and reduced mo
 		expect(await page.locator('#result-art').evaluate(element => getComputedStyle(element).animationName)).toBe('none');
 		expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 		await page.locator('#restart').click();
+		await expect(page.locator('#welcome-portrait')).toHaveAttribute('src', 'assets/blobby-careers/cardboard.png');
 	}
 	await page.setViewportSize({ width: 320, height: 800 });
 	expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 });
 
-test('all 24 Blobby careers render distinct, loaded outfit images instead of emoji badges', async ({ page }) => {
-	test.setTimeout(120000);
+test('all 72 pet and career combinations render distinct, loaded artwork instead of emoji badges', async ({ page }) => {
+	test.setTimeout(240000);
 	let currentCareer;
 	const failures = [];
 	const hashes = new Set();
@@ -102,9 +104,11 @@ test('all 24 Blobby careers render distinct, loaded outfit images instead of emo
 			body: `${source}\nPetCareers.createInterview = () => PetCareers.questions.filter(question => question.options.some(option => option.careerId === ${JSON.stringify(currentCareer)})).slice(0, PetCareers.interviewLength);`
 		});
 	});
+	for (const species of ['blobby', 'cat', 'dog']) {
 	for (const career of careers) {
 		currentCareer = career.id;
 		await page.goto('/');
+		await page.locator(`#species-options input[value="${species}"]`).check();
 		await page.getByRole('button', { name: 'Begin the paw-formance review' }).click();
 		for (let index = 0; index < 6; index++) {
 			await page.locator(`#answers input[value$="-${career.id}"]`).check();
@@ -112,17 +116,23 @@ test('all 24 Blobby careers render distinct, loaded outfit images instead of emo
 		}
 		await expect(page.locator('#career-title')).toHaveText(career.title);
 		const image = page.locator('#result-art img');
-		await expect(image).toHaveAttribute('src', `assets/blobby-careers/${career.id}.png`);
+		const source = species === 'blobby' ? `assets/blobby-careers/${career.id}.png` : `assets/pet-portraits/${species}-${career.id}.webp`;
+		await expect(image).toHaveAttribute('src', source);
 		await image.evaluate(image => image.decode());
-		expect(await image.evaluate(image => [image.naturalWidth, image.naturalHeight])).toEqual([160, 160]);
-		await expect(page.locator('#result-art')).toHaveAttribute('aria-label', `${outfits[career.id].description} Dressed for the ${career.title} career.`);
+		const dimension = species === 'blobby' ? 160 : 480;
+		expect(await image.evaluate(image => [image.naturalWidth, image.naturalHeight])).toEqual([dimension, dimension]);
+		if (species === 'blobby') {
+			await expect(page.locator('#result-art')).toHaveAttribute('aria-label', `${outfits[career.id].description} Dressed for the ${career.title} career.`);
+		} else {
+			await expect(page.locator('#result-art')).toHaveAttribute('aria-label', new RegExp(`${species}.*${career.title}`));
+		}
 		await expect(page.locator('#result-art svg, #result-art text')).toHaveCount(0);
-		await expect(page.locator('#prepared-art')).toBeHidden();
-		const bytes = await fs.readFile(path.join(__dirname, '..', 'public', 'assets', 'blobby-careers', `${career.id}.png`));
+		const bytes = await fs.readFile(path.join(__dirname, '..', 'public', source));
 		hashes.add(createHash('sha256').update(bytes).digest('hex'));
 		expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 	}
-	expect(hashes.size).toBe(24);
+	}
+	expect(hashes.size).toBe(72);
 	expect(failures).toEqual([]);
 });
 
