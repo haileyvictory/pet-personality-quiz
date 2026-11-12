@@ -1,0 +1,78 @@
+<!doctype html>
+<!-- Copyright (c) Microsoft Corporation. All rights reserved. -->
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="color-scheme" content="light">
+	<meta name="theme-color" content="#fcfaf5">
+	<meta name="description" content="Find your pet's wildly appropriate career. Six playful questions, 24 ridiculous jobs, and no sign-in.">
+	<meta name="referrer" content="no-referrer">
+	<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self'; connect-src 'none'; form-action 'none'; base-uri 'none'; object-src 'none'; frame-src 'none'">
+	<title>Very Qualified | What job would your pet have?</title>
+	<link rel="stylesheet" href="quiz.css">
+	<script src="engine.js" defer></script>
+	<script src="quiz.js" defer></script>
+</head>
+<body>
+	<a class="skip" href="#main">Skip to the quiz</a>
+	<header><a class="wordmark" href="./">Very Qualified<span aria-hidden="true">.</span></a><span class="header-note">Serious careers. Deeply unserious candidates.</span></header>
+	<main id="main">
+		<section id="welcome" aria-labelledby="welcome-title">
+			<div class="intro">
+				<p class="eyebrow">The department of very good employees <span aria-hidden="true">🐾</span></p>
+				<h1 id="welcome-title">Your pet has <em>potential.</em><br>And absolutely no references.</h1>
+				<p class="lede">24 deeply impawtant careers. Six questions from a bank of 48. A wildly appropriate calling for someone who has never paid rent.</p>
+				<div class="mini-stickers" aria-hidden="true"><span>🐾 No thumbs required</span><span>🍪 Paid in treats</span><span>💌 References: adorable</span></div>
+				<form id="start-form">
+					<fieldset id="start-controls" disabled>
+					<legend class="sr-only">Pet interview setup</legend>
+					<label for="pet-name">Your pet's name <span class="optional">(optional)</span></label>
+					<input id="pet-name" name="petName" maxlength="40" autocomplete="off" placeholder="Mochi">
+					<fieldset class="species">
+						<legend>Who are we interviewing?</legend>
+						<div id="species-options"></div>
+					</fieldset>
+					<button class="primary" type="submit">Begin the paw-formance review <span aria-hidden="true">&rarr;</span></button>
+					</fieldset>
+					<p id="startup-status" class="privacy" role="status">Loading the interview. If this message stays visible, enable JavaScript or reload the page.</p>
+					<p class="privacy">No sign-in. No photo upload. Names and answers stay in this page.</p>
+				</form>
+			</div>
+			<figure class="hero-card">
+				<span class="corner-sticker" aria-hidden="true">EMPLOYEE<br>OF THE MEOWTH</span>
+				<div class="portrait" role="img" aria-label="Original AI-generated illustration of an orange cat in a blazer, supervising a cardboard box." style="--column:0;--row:0"></div>
+				<figcaption><span class="stamp">VERY QUALIFIED</span><strong>Chief Cardboard Officer</strong><span>Thinks outside the box. Sleeps inside it.</span></figcaption>
+			</figure>
+		</section>
+		<section id="interview" hidden aria-labelledby="question-title">
+			<div class="interview-heading"><div><p class="eyebrow" id="question-count"></p><p id="encouragement" class="small"></p></div><div id="interview-mascot" class="interview-mascot" role="img"></div></div>
+			<progress id="progress" max="6" value="1" aria-label="Interview progress"></progress>
+			<h1 id="question-title" tabindex="-1"></h1>
+			<form id="answer-form">
+				<fieldset id="answers"><legend class="sr-only">Choose the answer that sounds most like your pet</legend></fieldset>
+				<p id="answer-error" role="alert" hidden>Paws a moment. Choose an answer before continuing.</p>
+				<div class="actions"><button id="back" class="secondary" type="button">Back</button><button id="next" class="primary" type="submit">Next question <span aria-hidden="true">&rarr;</span></button></div>
+			</form>
+			<p class="small">No wrong answers. Just questionable professional qualifications.</p>
+		</section>
+		<section id="result" hidden aria-labelledby="result-title">
+			<div class="result-intro"><p class="eyebrow">A round of a-paws. The committee has decided.</p><h1 id="result-title" tabindex="-1"></h1><p class="lede">After an exhaustive six-question vetting process, your tiny professional is ready for big business.</p></div>
+			<article class="result-card" aria-labelledby="career-title">
+				<div class="result-visual"><span class="result-rosette" aria-hidden="true">🏅 HIRED FOR<br>EXTREME CUTENESS</span><div id="result-art" class="pet-sticker" role="img"></div><div id="prepared-art" class="portrait prepared-art" role="img" hidden></div></div>
+				<div class="result-copy">
+					<p class="stamp">EXTREMELY EMPLOYABLE</p>
+					<p id="result-department" class="eyebrow"></p>
+					<h2 id="career-title"></h2>
+					<ul id="qualifications"></ul>
+					<p class="offer" id="offer"></p>
+				</div>
+			</article>
+			<div class="actions"><button class="primary" id="restart">New pet. Fresh questions. More pawtential.</button><button class="secondary" id="edit-answers">Reconsider their qualifications</button></div>
+			<p class="small">A playful rules-based quiz, not a real personality assessment. Cat, Dog, or Blobby: six fresh questions and 24 possible careers. Cat and dog results use original vector stickers, with bonus prepared AI portraits for the cardboard, snack-inspection, and neighborhood-surveillance roles. Blobby brings the official VS Code pet sprite and a badge for every job. No live image generation.</p>
+		</section>
+	</main>
+	<footer><span>The purr-suit of happiness. Not actual recruitment.</span><span><a href="about.html">Privacy &amp; credits</a> &middot; <a href="https://github.com/haileyvictory/very-qualified">Source on GitHub</a></span></footer>
+	<noscript><p class="noscript">This quiz needs JavaScript to calculate the result. Your answers are processed only in your browser.</p></noscript>
+</body>
+</html>
