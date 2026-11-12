@@ -11,6 +11,22 @@ The original asset credits identify this exact source. Blobby is not
 AI-generated quiz artwork. Use here does not imply endorsement or grant
 trademark rights.
 
+### Career outfits
+
+The hat atlases in `art-source/accessories/` are Microsoft Corporation artwork
+from the same MIT-licensed
+[public VS Code accessories directory](https://github.com/microsoft/vscode/tree/main/src/vs/workbench/contrib/chat/browser/widget/media/chatPet/accessories).
+Each imported atlas was verified against its public upstream Git blob hash.
+The accompanying [MIT license](LICENSE.txt) applies to these assets and the
+derived outfit PNGs in `public/assets/blobby-careers/`.
+
+The quiz's career images combine the original body and hats with original
+pixel-art props and custom palette variations. The idle head attachment and
+antenna masking follow the public VS Code accessory rig. These are independent
+quiz illustrations, not official career outfits or VS Code achievement unlocks.
+No VS Code runtime code is shipped. `scripts/build-blobby.cjs` builds the
+composites locally, and every career has an authored visual description.
+
 ## Prepared pet portraits
 
 `public/assets/pet-careers.png` is original prepared AI-generated artwork made

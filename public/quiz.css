@@ -51,7 +51,8 @@ input[type="radio"] { accent-color: var(--teal); width: 20px; height: 20px; marg
 .species label small { font-size: 11px; color: var(--muted); font-weight: 400; margin-top: 4px; }
 .species-symbol { font-size: 32px; justify-self: center; line-height: 1; }
 .species-symbol img { width: 36px; height: 36px; display: block; image-rendering: pixelated; }
-.blobby-sprite { image-rendering: pixelated; }
+.blobby-career { display: block; width: 100%; max-width: 400px; height: auto; margin-inline: auto; image-rendering: pixelated; }
+.blobby-interview { display: block; width: 100%; height: auto; image-rendering: pixelated; }
 .primary, .secondary { border-radius: 10px; padding: 15px 24px; min-height: 48px; font-weight: 600; transition: transform .18s ease, box-shadow .18s ease; text-align: center; }
 .primary { border: 1px solid var(--teal); background: var(--teal); color: white; }
 .secondary { background: white; border: 1px solid #818b83; color: var(--ink); }

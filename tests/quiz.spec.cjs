@@ -1,4 +1,9 @@
 const { test, expect } = require('@playwright/test');
+const { createHash } = require('node:crypto');
+const fs = require('node:fs/promises');
+const path = require('node:path');
+const { careers } = require('../public/engine.js');
+const outfits = require('../public/blobby-outfits.js');
 
 test('Blobby leads, supports keyboard selection, and completes a private, replayable interview', async ({ page, baseURL }) => {
 	const failures = [];
@@ -41,6 +46,8 @@ test('Blobby leads, supports keyboard selection, and completes a private, replay
 	await expect(page.locator('#result-title img')).toHaveCount(0);
 	await expect(page.locator('#career-title')).not.toBeEmpty();
 	await expect(page.locator('#result-art')).toHaveAttribute('aria-label', /Blobby/);
+	await expect(page.locator('#result-art img.blobby-career')).toBeVisible();
+	await expect(page.locator('#result-art svg')).toHaveCount(0);
 	await page.locator('#edit-answers').click();
 	await expect(page.locator('#answers input:checked')).toHaveValue(revisedAnswer);
 	for (let index = 0; index < 6; index++) await page.locator('#next').click();
@@ -75,6 +82,48 @@ test('cat and dog artwork loads, and the page fits narrow screens and reduced mo
 	}
 	await page.setViewportSize({ width: 320, height: 800 });
 	expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+});
+
+test('all 24 Blobby careers render distinct, loaded outfit images instead of emoji badges', async ({ page }) => {
+	test.setTimeout(120000);
+	let currentCareer;
+	const failures = [];
+	const hashes = new Set();
+	page.on('pageerror', error => failures.push(error.message));
+	page.on('response', response => {
+		if (response.status() >= 400) failures.push(`HTTP ${response.status()}: ${response.url()}`);
+	});
+	// Fix only the question selection; retain authored answers, scoring, and the production UI.
+	await page.route('**/engine.js', async route => {
+		const response = await route.fetch();
+		const source = await response.text();
+		await route.fulfill({
+			response,
+			body: `${source}\nPetCareers.createInterview = () => PetCareers.questions.filter(question => question.options.some(option => option.careerId === ${JSON.stringify(currentCareer)})).slice(0, PetCareers.interviewLength);`
+		});
+	});
+	for (const career of careers) {
+		currentCareer = career.id;
+		await page.goto('/');
+		await page.getByRole('button', { name: 'Begin the paw-formance review' }).click();
+		for (let index = 0; index < 6; index++) {
+			await page.locator(`#answers input[value$="-${career.id}"]`).check();
+			await page.locator('#next').click();
+		}
+		await expect(page.locator('#career-title')).toHaveText(career.title);
+		const image = page.locator('#result-art img');
+		await expect(image).toHaveAttribute('src', `assets/blobby-careers/${career.id}.png`);
+		await image.evaluate(image => image.decode());
+		expect(await image.evaluate(image => [image.naturalWidth, image.naturalHeight])).toEqual([160, 160]);
+		await expect(page.locator('#result-art')).toHaveAttribute('aria-label', `${outfits[career.id].description} Dressed for the ${career.title} career.`);
+		await expect(page.locator('#result-art svg, #result-art text')).toHaveCount(0);
+		await expect(page.locator('#prepared-art')).toBeHidden();
+		const bytes = await fs.readFile(path.join(__dirname, '..', 'public', 'assets', 'blobby-careers', `${career.id}.png`));
+		hashes.add(createHash('sha256').update(bytes).digest('hex'));
+		expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+	}
+	expect(hashes.size).toBe(24);
+	expect(failures).toEqual([]);
 });
 
 test('disabled or broken JavaScript cannot submit a pet name', async ({ browser, baseURL }) => {

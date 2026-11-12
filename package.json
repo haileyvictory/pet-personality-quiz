@@ -8,6 +8,7 @@
     "node": ">=22"
   },
   "scripts": {
+    "build:art": "node scripts/build-blobby.cjs",
     "start": "node scripts/serve.cjs",
     "test": "node --test tests/quiz.test.cjs",
     "test:browser": "playwright test",

@@ -40,9 +40,31 @@ startup when JavaScript is unavailable.
 - `public/quiz.js`: UI, focus management, answer revision, and replay.
 - `public/engine.js`: pets, questions, careers, and deterministic scoring.
 - `public/quiz.css`: responsive styles, focus indicators, and reduced motion.
-- `public/assets/`: the two runtime images only.
+- `public/assets/`: bundled portraits, the original Blobby sprite, and 24 career outfit PNGs.
+- `public/blobby-outfits.js`: job-specific hats, palettes, props, and image descriptions.
+- `art-source/accessories/`: verified public, MIT-licensed VS Code hat atlases.
 - `tests/`: engine and browser regression tests.
 - `scripts/serve.cjs`: dependency-free local preview server.
+
+## Blobby's career wardrobe
+
+Each of the 24 careers has its own composed pixel-art image: an official
+VS Code-style hat, one of six body palettes, and original job-specific props.
+There are no emoji badges on Blobby's results. Outfits are quiz illustrations,
+not actual VS Code achievement unlocks. Cat and dog results are unchanged.
+
+To rebuild the committed PNGs after editing the outfit definitions or pixel art:
+
+```sh
+npx playwright install chromium
+npm run build:art
+```
+
+The art build uses a local browser canvas with no network requests. It preserves
+the original body geometry, uses the official idle hat anchors, and draws on an
+eight-pixel grid with opaque pixels and transparent backgrounds. Runtime pages
+load the finished static PNGs; no canvas, image service, or build tool is needed
+to take the quiz.
 
 ## Privacy
 

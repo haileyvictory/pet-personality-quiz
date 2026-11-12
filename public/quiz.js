@@ -48,16 +48,35 @@
 
 	function renderSticker(target, career) {
 		const pet = species[speciesIndex];
+		if (pet.id === 'blobby') {
+			const image = document.createElement('img');
+			image.alt = '';
+			if (career) {
+				const outfit = BlobbyOutfits[career.id];
+				if (!outfit) {
+					throw new Error(`Missing Blobby career outfit: ${career.id}`);
+				}
+				image.src = `assets/blobby-careers/${career.id}.png`;
+				image.className = 'blobby-career';
+				image.width = image.height = 160;
+				target.setAttribute('aria-label', `${outfit.description} Dressed for the ${career.title} career.`);
+			} else {
+				image.src = 'assets/blobby.png';
+				image.className = 'blobby-interview';
+				image.width = image.height = 96;
+				target.setAttribute('aria-label', 'Blobby, the blue VS Code pet, at the career interview.');
+			}
+			target.replaceChildren(image);
+			return;
+		}
 		const ears = {
 			cat: '<path d="M118 160 105 68 180 119M242 119 315 68 302 160" fill="#edb275"/>',
 			dog: '<ellipse cx="113" cy="170" rx="33" ry="76" fill="#ba784c" transform="rotate(18 113 170)"/><ellipse cx="307" cy="170" rx="33" ry="76" fill="#ba784c" transform="rotate(-18 307 170)"/>'
 		};
 		const fills = { cat: '#f3c58d', dog: '#e9bc91' };
-		const character = pet.id === 'blobby' ?
-			'<image class="blobby-sprite" href="assets/blobby.png" x="66" y="48" width="288" height="288"/>' :
-			`${ears[pet.id]}<ellipse cx="210" cy="212" rx="111" ry="98" fill="${fills[pet.id]}"/><ellipse cx="210" cy="286" rx="66" ry="54" fill="${fills[pet.id]}"/><ellipse cx="168" cy="208" rx="8" ry="11" fill="#283747"/><ellipse cx="252" cy="208" rx="8" ry="11" fill="#283747"/><ellipse cx="145" cy="232" rx="18" ry="10" fill="#f0a3ab" opacity=".65"/><ellipse cx="275" cy="232" rx="18" ry="10" fill="#f0a3ab" opacity=".65"/><path d="m201 229 9 8 9-8Z" fill="#ae6b70"/><path d="M210 238q-8 17-21 5m21-5q8 17 21 5" fill="none" stroke="#6b554d" stroke-width="3" stroke-linecap="round"/><path d="m183 292 27 12 27-12v30l-27-13-27 13Z" fill="#347e75"/><circle cx="210" cy="306" r="7" fill="#efb95c"/>`;
+		const character = `${ears[pet.id]}<ellipse cx="210" cy="212" rx="111" ry="98" fill="${fills[pet.id]}"/><ellipse cx="210" cy="286" rx="66" ry="54" fill="${fills[pet.id]}"/><ellipse cx="168" cy="208" rx="8" ry="11" fill="#283747"/><ellipse cx="252" cy="208" rx="8" ry="11" fill="#283747"/><ellipse cx="145" cy="232" rx="18" ry="10" fill="#f0a3ab" opacity=".65"/><ellipse cx="275" cy="232" rx="18" ry="10" fill="#f0a3ab" opacity=".65"/><path d="m201 229 9 8 9-8Z" fill="#ae6b70"/><path d="M210 238q-8 17-21 5m21-5q8 17 21 5" fill="none" stroke="#6b554d" stroke-width="3" stroke-linecap="round"/><path d="m183 292 27 12 27-12v30l-27-13-27 13Z" fill="#347e75"/><circle cx="210" cy="306" r="7" fill="#efb95c"/>`;
 		target.innerHTML = `<svg viewBox="0 0 420 400" aria-hidden="true" focusable="false"><circle cx="210" cy="206" r="154" fill="#fff5d5"/><g fill="#e8b44e"><path d="m65 92 5 13 14 5-14 5-5 13-5-13-14-5 14-5Z"/><path d="m354 265 5 13 14 5-14 5-5 13-5-13-14-5 14-5Z"/></g><ellipse cx="210" cy="346" rx="110" ry="13" fill="#315744" opacity=".1"/>${character}<circle cx="320" cy="300" r="52" fill="white" stroke="#d4dfcb" stroke-width="2"/><text x="320" y="319" text-anchor="middle" font-size="54" font-family="Segoe UI Emoji, sans-serif">${career ? career.symbol : '🐾'}</text></svg>`;
-		const description = pet.id === 'blobby' ? 'Blobby, the blue VS Code pet' : `Illustrated ${pet.label.toLowerCase()}`;
+		const description = `Illustrated ${pet.label.toLowerCase()}`;
 		target.setAttribute('aria-label', career ? `${description} with a ${career.title} career badge.` : `${description} at the career interview.`);
 	}
 
