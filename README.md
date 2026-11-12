@@ -58,9 +58,10 @@ Source links leave the app only when you choose to follow them.
 
 ## Deploy
 
-The `Test and deploy` workflow runs tests for pull requests and main-branch
-pushes. Only `public/` is uploaded as the site. Deployment requires a successful
-test job. In repository Settings > Pages, choose **GitHub Actions** as the source.
+The `Test and deploy` workflow runs tests and a dependency audit for pull requests
+and main-branch pushes. Actions are pinned to immutable revisions, and Dependabot
+checks for updates monthly. Only `public/` is uploaded as the site. Deployment
+requires a successful test job. In repository Settings > Pages, choose **GitHub Actions** as the source.
 No custom secrets are needed. The default Pages address is
 https://haileyvictory.github.io/very-qualified/.
 
