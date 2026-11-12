@@ -1,4 +1,4 @@
-# Very Qualified
+# Pet Personality Quiz
 
 Serious careers. Deeply unserious candidates.
 
@@ -6,7 +6,7 @@ A playful pet-career quiz for Blobby, cats, and dogs. Answer six questions from
 48 authored scenarios to discover one of 24 ridiculous jobs. No accounts,
 backend, API keys, analytics, or runtime dependencies.
 
-**[Play the quiz](https://haileyvictory.github.io/very-qualified/)**
+**[Play the quiz](https://haileyvictory.github.io/pet-personality-quiz/)**
 
 ## Run locally
 
@@ -63,7 +63,7 @@ and main-branch pushes. Actions are pinned to immutable revisions, and Dependabo
 checks for updates monthly. Only `public/` is uploaded as the site. Deployment
 requires a successful test job. In repository Settings > Pages, choose **GitHub Actions** as the source.
 No custom secrets are needed. The default Pages address is
-https://haileyvictory.github.io/very-qualified/.
+https://haileyvictory.github.io/pet-personality-quiz/.
 
 ## Contributing
 

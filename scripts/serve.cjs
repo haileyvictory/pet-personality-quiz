@@ -39,5 +39,5 @@ server.on('error', error => {
 	process.exitCode = 1;
 });
 server.listen(port, '127.0.0.1', () => {
-	console.log(`Very Qualified: http://127.0.0.1:${server.address().port}`);
+	console.log(`Pet Personality Quiz: http://127.0.0.1:${server.address().port}`);
 });
