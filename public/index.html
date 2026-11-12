@@ -5,7 +5,7 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="color-scheme" content="light">
-	<meta name="theme-color" content="#fcfaf5">
+	<meta name="theme-color" content="#f8f6f0">
 	<meta name="description" content="Find your pet's wildly appropriate career. Six playful questions, 24 ridiculous jobs, and no sign-in.">
 	<meta name="referrer" content="no-referrer">
 	<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self'; connect-src 'none'; form-action 'none'; base-uri 'none'; object-src 'none'; frame-src 'none'">
@@ -15,65 +15,99 @@
 	<script src="blobby-outfits.js" defer></script>
 	<script src="quiz.js" defer></script>
 </head>
-<body>
+<body data-view="welcome">
 	<a class="skip" href="#main">Skip to the quiz</a>
-	<header><a class="wordmark" href="./">Pet Personality Quiz<span aria-hidden="true">.</span></a><span class="header-note">Serious careers. Deeply unserious candidates.</span></header>
+	<header class="site-header">
+		<a class="wordmark" href="./" aria-label="Pet Personality Quiz home"><span class="brand-icon" aria-hidden="true">p.</span><span class="brand-name">pet personality quiz<span>THE CAREER EDITION</span></span></a>
+		<ol class="journey" aria-label="Interview steps">
+			<li><button id="step-meet" type="button" data-view="welcome" aria-controls="welcome" aria-current="step" disabled><span aria-hidden="true">01</span> Meet</button></li>
+			<li><button id="step-interview" type="button" data-view="interview" aria-controls="interview" disabled><span aria-hidden="true">02</span> Interview</button></li>
+			<li><button id="step-result" type="button" data-view="result" aria-controls="result" disabled><span aria-hidden="true">03</span> Hired!</button></li>
+		</ol>
+		<span class="header-note"><span class="status-dot" aria-hidden="true"></span> Open for paw-sibilities</span>
+	</header>
 	<main id="main">
 		<section id="welcome" aria-labelledby="welcome-title">
 			<div class="intro">
-				<p class="eyebrow">The department of very good employees <span aria-hidden="true">🐾</span></p>
-				<h1 id="welcome-title">Your pet has <em>potential.</em><br>And absolutely no references.</h1>
-				<p class="lede">24 deeply impawtant careers. Six questions from a bank of 48. A wildly appropriate calling for someone who has never paid rent.</p>
-				<div class="mini-stickers" aria-hidden="true"><span>🐾 No thumbs required</span><span>🍪 Paid in treats</span><span>💌 References: adorable</span></div>
+				<p class="eyebrow"><span class="eyebrow-line" aria-hidden="true"></span> The pet career bureau</p>
+				<h1 id="welcome-title">Big dreams.<br><em>Tiny résumés.</em></h1>
+				<p class="lede">Find the wildly appropriate career for your deeply unqualified best friend.</p>
+				<div class="intro-facts"><span><strong>06</strong> questions</span><span><strong>24</strong> careers</span><span><strong>Zero</strong> references</span></div>
+			</div>
+			<div class="application-card">
+				<div class="application-heading"><h2>Let's meet the candidate.</h2><span aria-hidden="true">01 / 03</span></div>
 				<form id="start-form">
 					<fieldset id="start-controls" disabled>
-					<legend class="sr-only">Pet interview setup</legend>
-					<label for="pet-name">Your pet's name <span class="optional">(optional)</span></label>
-					<input id="pet-name" name="petName" maxlength="40" autocomplete="off" placeholder="Mochi">
-					<fieldset class="species">
-						<legend>Who are we interviewing?</legend>
-						<div id="species-options"></div>
-					</fieldset>
-					<button class="primary" type="submit">Begin the paw-formance review <span aria-hidden="true">&rarr;</span></button>
+						<legend class="sr-only">Pet interview setup</legend>
+						<label for="pet-name">Your pet's name <span class="optional">(optional)</span></label>
+						<input id="pet-name" name="petName" maxlength="40" autocomplete="off" placeholder="Blobby">
+						<fieldset class="species">
+							<legend>Who are we interviewing?</legend>
+							<div id="species-options"></div>
+						</fieldset>
+						<button class="primary start-button" type="submit"><span>Begin the paw-formance review</span><span class="button-arrow" aria-hidden="true">&rarr;</span></button>
 					</fieldset>
 					<p id="startup-status" class="privacy" role="status">Loading the interview. If this message stays visible, enable JavaScript or reload the page.</p>
-					<p class="privacy">No sign-in. No photo upload. Names and answers stay in this page.</p>
+					<p class="privacy"><span class="privacy-mark" aria-hidden="true"></span> No sign-in or uploads. Your interview stays in this page.</p>
 				</form>
 			</div>
-			<figure class="hero-card">
-				<span class="corner-sticker" aria-hidden="true">EMPLOYEE<br>OF THE MONTH</span>
-				<img id="welcome-portrait" class="blobby-career" src="assets/blobby-careers/cardboard.png" width="160" height="160" alt="Azure Blobby in a top hat and monocle, tucked into a tiny cardboard office.">
-				<figcaption><span class="stamp">PET PERSONALITY QUIZ</span><strong>Chief Cardboard Officer</strong><span>Thinks outside the box. Sleeps inside it.</span></figcaption>
-			</figure>
+			<aside class="talent-showcase" aria-label="A little career inspiration">
+				<div class="showcase-heading"><span><span class="status-dot" aria-hidden="true"></span> Small pet. Main character energy.</span><span aria-hidden="true">↗</span></div>
+				<div class="showcase-orbit orbit-one" aria-hidden="true"></div>
+				<div class="showcase-orbit orbit-two" aria-hidden="true"></div>
+				<span class="sparkle sparkle-one" aria-hidden="true"></span>
+				<span class="sparkle sparkle-two" aria-hidden="true"></span>
+				<figure class="hero-card">
+					<div class="employee-card-heading"><span class="stamp">THE TALENT FILE</span><span class="hired-tag">HIRED</span></div>
+					<div class="hero-portrait"><div id="preview-art" class="career-preview-art" role="img" aria-label="Azure Blobby in a top hat and monocle, tucked into a tiny cardboard office."><img class="blobby-career" src="assets/blobby-careers/cardboard.png" width="160" height="160" alt=""></div></div>
+					<figcaption aria-live="polite" aria-atomic="true"><span class="stamp">A VERY IMPORTANT SOMEONE</span><strong id="preview-title">Chief Cardboard Officer</strong><span id="preview-description">Thinks outside the box. Sleeps inside it.</span></figcaption>
+				</figure>
+				<span class="floating-note" aria-hidden="true">Paid in treats.<br>Rich in potential.</span>
+				<span class="potential-seal" aria-hidden="true"><span>100%</span> good employee<br>energy</span>
+				<div class="showcase-footer"><span>Serious careers.<br><strong>Deeply unserious candidates.</strong></span><span class="showcase-counter" aria-hidden="true"><span id="preview-number">01</span> <span class="preview-total">/ 24</span></span></div>
+			</aside>
+			<div class="perks-strip" aria-label="The workplace perks"><span class="perks-label">THE PERKS</span><span>No thumbs required</span><span class="perk-spark" aria-hidden="true">✦</span><span>Paid in treats</span><span class="perk-spark" aria-hidden="true">✦</span><span>Unlimited pawtential</span></div>
 		</section>
 		<section id="interview" hidden aria-labelledby="question-title">
-			<div class="interview-heading"><div><p class="eyebrow" id="question-count"></p><p id="encouragement" class="small"></p></div><div id="interview-mascot" class="interview-mascot" role="img"></div></div>
-			<progress id="progress" max="6" value="1" aria-label="Interview progress"></progress>
-			<h1 id="question-title" tabindex="-1"></h1>
-			<form id="answer-form">
-				<fieldset id="answers"><legend class="sr-only">Choose the answer that sounds most like your pet</legend></fieldset>
-				<p id="answer-error" role="alert" hidden>Paws a moment. Choose an answer before continuing.</p>
-				<div class="actions"><button id="back" class="secondary" type="button">Back</button><button id="next" class="primary" type="submit">Next question <span aria-hidden="true">&rarr;</span></button></div>
-			</form>
-			<p class="small">No wrong answers. Just questionable professional qualifications.</p>
+			<aside class="interview-aside">
+				<p class="eyebrow">THE CANDIDATE</p>
+				<h2>Great things.<br><em>Small packages.</em></h2>
+				<div class="candidate-visual"><div id="interview-mascot" class="interview-mascot" role="img"></div></div>
+				<p id="candidate-name" class="candidate-name"></p>
+				<p class="aside-note">Go with your gut.<br>They usually do.</p>
+				<span class="sparkle aside-spark" aria-hidden="true"></span>
+			</aside>
+			<div class="question-panel">
+				<div class="interview-heading"><div><p class="eyebrow" id="question-count"></p><p id="encouragement" class="small"></p></div><span class="question-badge">GOOD INSTINCTS ONLY</span></div>
+				<progress id="progress" max="6" value="1" aria-label="Interview progress"></progress>
+				<h1 id="question-title" tabindex="-1"></h1>
+				<form id="answer-form">
+					<fieldset id="answers"><legend class="sr-only">Choose the answer that sounds most like your pet</legend></fieldset>
+					<p id="answer-error" role="alert" hidden>Paws a moment. Choose an answer before continuing.</p>
+					<div class="actions interview-actions"><button id="back" class="secondary" type="button"><span aria-hidden="true">&larr;</span> Back</button><button id="next" class="primary" type="submit"><span id="next-label">Next question</span><span class="button-arrow" aria-hidden="true">&rarr;</span></button></div>
+				</form>
+				<p class="small interview-footnote">No wrong answers. Just questionable professional qualifications.</p>
+			</div>
 		</section>
 		<section id="result" hidden aria-labelledby="result-title">
-			<div class="result-intro"><p class="eyebrow">A round of a-paws. The committee has decided.</p><h1 id="result-title" tabindex="-1"></h1><p class="lede">After an exhaustive six-question vetting process, your tiny professional is ready for big business.</p></div>
+			<div class="result-intro"><p class="eyebrow"><span class="status-dot" aria-hidden="true"></span> A round of a-paws. It's official.</p><h1 id="result-title" tabindex="-1"></h1><p class="lede">Small candidate. Impressive future. The committee has found their calling.</p></div>
 			<article class="result-card" aria-labelledby="career-title">
-				<div class="result-visual"><span class="result-rosette" aria-hidden="true">🏅 HIRED FOR<br>EXTREME CUTENESS</span><div id="result-art" class="pet-sticker" role="img"></div></div>
+				<div class="result-visual"><span class="result-rosette" aria-hidden="true"><span class="status-dot"></span> OFFICIALLY EMPLOYABLE</span><span class="sparkle result-spark" aria-hidden="true"></span><div id="result-art" class="pet-sticker" role="img"></div><span class="visual-caption" aria-hidden="true">THE NEXT BIG THING.<br>IN A VERY SMALL PACKAGE.</span></div>
 				<div class="result-copy">
-					<p class="stamp">EXTREMELY EMPLOYABLE</p>
+					<p class="stamp appointment-label">YOUR OFFICIAL APPOINTMENT</p>
 					<p id="result-department" class="eyebrow"></p>
 					<h2 id="career-title"></h2>
+					<p class="qualifications-label">A few outstanding qualifications</p>
 					<ul id="qualifications"></ul>
+					<p class="stamp offer-label">THE OFFER</p>
 					<p class="offer" id="offer"></p>
 				</div>
 			</article>
-			<div class="actions"><button class="primary" id="restart">New pet. Fresh questions. More pawtential.</button><button class="secondary" id="edit-answers">Reconsider their qualifications</button></div>
-			<p class="small">A playful rules-based quiz, not a real personality assessment. Cat, Dog, or Blobby: six fresh questions and 24 possible careers. Every cat and dog career has a full-size, prepared AI storybook portrait, including the original box executive, snack inspector, and neighborhood lookout. Blobby gets a job-specific pixel-art outfit with a hat, a color, and tools of the trade for every career. These quiz outfits do not unlock VS Code achievements. No live image generation.</p>
+			<div class="actions result-actions"><button class="primary" id="restart"><span>Interview another pet</span><span class="button-arrow" aria-hidden="true">&rarr;</span></button><button class="secondary" id="edit-answers">Reconsider their qualifications</button></div>
+			<p class="small">A playful rules-based quiz, not a real personality assessment. Cat, Dog, or Blobby: six fresh questions and 24 possible careers. Every cat and dog career has a full-size, prepared AI storybook portrait. Blobby gets a job-specific pixel-art outfit with a hat, a color, and tools of the trade for every career. These quiz outfits do not unlock VS Code achievements. No live image generation.</p>
 		</section>
 	</main>
-	<footer><span>The purr-suit of happiness. Not actual recruitment.</span><span><a href="about.html">Privacy &amp; credits</a> &middot; <a href="https://github.com/haileyvictory/pet-personality-quiz">Source on GitHub</a></span></footer>
+	<footer><span class="footer-signoff"><span aria-hidden="true">✦</span> The purr-suit of happiness. Not actual recruitment.</span><span class="footer-links"><a href="about.html">Privacy &amp; credits</a><a href="https://github.com/haileyvictory/pet-personality-quiz">Source on GitHub <span aria-hidden="true">↗</span></a></span></footer>
 	<noscript><p class="noscript">This quiz needs JavaScript to calculate the result. Your answers are processed only in your browser.</p></noscript>
 </body>
 </html>

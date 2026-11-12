@@ -14,6 +14,7 @@ test('Blobby leads, supports keyboard selection, and completes a private, replay
 	});
 	page.on('request', request => requests.push(request.url()));
 	await page.goto('/');
+	await expect(page.locator('.journey [aria-current="step"]')).toHaveAttribute('data-view', 'welcome');
 	const pets = page.locator('#species-options input');
 	await expect(pets).toHaveCount(3);
 	expect(await pets.evaluateAll(inputs => inputs.map(input => input.value))).toEqual(['blobby', 'cat', 'dog']);
@@ -26,6 +27,10 @@ test('Blobby leads, supports keyboard selection, and completes a private, replay
 	await page.keyboard.press('ArrowLeft');
 	await expect(pets.first()).toBeChecked();
 	await page.getByRole('button', { name: 'Begin the paw-formance review' }).click();
+	await expect(page.locator('.journey [aria-current="step"]')).toHaveAttribute('data-view', 'interview');
+	await expect(page.locator('#candidate-name')).toHaveText('<img src=x onerror=alert(1)>');
+	await expect(page.locator('#candidate-name img')).toHaveCount(0);
+	await expect(page.locator('#question-title')).toBeFocused();
 	await page.locator('#next').click();
 	await expect(page.locator('#answer-error')).toBeVisible();
 	const firstPrompt = await page.locator('#question-title').textContent();
@@ -42,6 +47,7 @@ test('Blobby leads, supports keyboard selection, and completes a private, replay
 		await page.locator('#next').click();
 	}
 	await expect(page.locator('#result')).toBeVisible();
+	await expect(page.locator('.journey [aria-current="step"]')).toHaveAttribute('data-view', 'result');
 	await expect(page.locator('#result-title')).toHaveText("<img src=x onerror=alert(1)>, you're hired.");
 	await expect(page.locator('#result-title img')).toHaveCount(0);
 	await expect(page.locator('#career-title')).not.toBeEmpty();
@@ -53,44 +59,193 @@ test('Blobby leads, supports keyboard selection, and completes a private, replay
 	for (let index = 0; index < 6; index++) await page.locator('#next').click();
 	await page.locator('#restart').click();
 	await expect(page.locator('#welcome')).toBeVisible();
+	await expect(page.locator('.journey [aria-current="step"]')).toHaveAttribute('data-view', 'welcome');
 	await expect(page.locator('#pet-name')).toHaveValue('');
 	await expect(pets.first()).toBeChecked();
+	await expect(page.locator('#preview-art')).toHaveAttribute('aria-label', /Blobby/);
 	expect(await page.evaluate(() => ({ local: localStorage.length, session: sessionStorage.length, cookies: document.cookie }))).toEqual({ local: 0, session: 0, cookies: '' });
 	expect(requests.every(url => url.startsWith(baseURL + '/') && !url.includes('petName'))).toBe(true);
 	expect(failures).toEqual([]);
 });
 
-test('cat and dog artwork loads, and the page fits narrow screens and reduced motion', async ({ page }) => {
+test('stage navigation starts, resumes, and revisits the quiz without losing answers', async ({ page }) => {
+	await page.emulateMedia({ reducedMotion: 'reduce' });
+	await page.route('**/engine.js', async route => {
+		const response = await route.fetch();
+		await route.fulfill({
+			response,
+			body: `${await response.text()}\n(() => {
+				const create = PetCareers.createInterview;
+				PetCareers.createInterview = previous => previous.length ? create(previous) :
+					PetCareers.questions.filter(question => ['parcel', 'delivery', 'business-card', 'talent-show', 'award', 'art-gallery'].includes(question.id));
+			})();`
+		});
+	});
+	await page.goto('/');
+	const meet = page.getByRole('button', { name: 'Meet', exact: true });
+	const interview = page.getByRole('button', { name: 'Interview', exact: true });
+	const hired = page.getByRole('button', { name: 'Hired!', exact: true });
+	await expect(hired).toBeDisabled();
+	await page.locator('#pet-name').fill('Mochi');
+	await interview.click();
+	const prompts = [await page.locator('#question-title').textContent()];
+	await page.locator('#answers input[value$="-cardboard"]').check();
+	await page.locator('#next').click();
+	await page.locator('#answers input[value$="-artist"]').check();
+	const resumedPrompt = await page.locator('#question-title').textContent();
+	const resumedAnswer = await page.locator('#answers input:checked').inputValue();
+	await meet.focus();
+	await page.keyboard.press('Enter');
+	await expect(page.locator('#welcome')).toBeVisible();
+	await expect(page.locator('#pet-name')).toBeFocused();
+	await expect(page.locator('#pet-name')).toHaveValue('Mochi');
+	await expect(meet).toHaveAttribute('aria-current', 'step');
+	await expect(hired).toBeDisabled();
+	await interview.focus();
+	await page.keyboard.press('Space');
+	await expect(page.locator('#question-title')).toBeFocused();
+	await expect(page.locator('#question-title')).toHaveText(resumedPrompt);
+	await expect(page.locator('#answers input:checked')).toHaveValue(resumedAnswer);
+	for (let index = 1; index < 6; index++) {
+		prompts.push(await page.locator('#question-title').textContent());
+		await page.locator('#answers input[value$="-cardboard"]').check();
+		if (index < 5) await page.locator('#next').click();
+	}
+	await expect(hired).toBeEnabled();
+	await hired.click();
+	await expect(page.locator('#result-title')).toHaveText("Mochi, you're hired.");
+	await expect(page.locator('#career-title')).toHaveText('Chief Cardboard Officer');
+	await meet.click();
+	await expect(page.locator('#welcome')).toBeVisible();
+	await hired.click();
+	await expect(page.locator('#result-title')).toBeFocused();
+	await expect(hired).toHaveAttribute('aria-current', 'step');
+	await interview.click();
+	await expect(page.locator('#question-count')).toHaveText('Question 6 of 6');
+	await expect(page.locator('#answers input[value$="-cardboard"]')).toBeChecked();
+	await hired.click();
+	await page.locator('#edit-answers').click();
+	for (let index = 0; index < 6; index++) {
+		await page.locator('#answers input[value$="-artist"]').check();
+		if (index < 5) await page.locator('#next').click();
+	}
+	await hired.click();
+	await expect(page.locator('#career-title')).toHaveText('Principal Pawtrait Artist');
+	await page.locator('#restart').click();
+	await expect(hired).toBeDisabled();
+	await interview.click();
+	await expect(page.locator('#candidate-name')).toHaveText('Blobby');
+	await expect(page.locator('#question-count')).toHaveText('Question 1 of 6');
+	await expect(page.locator('#answers input:checked')).toHaveCount(0);
+	expect(prompts).not.toContain(await page.locator('#question-title').textContent());
+	await page.setViewportSize({ width: 320, height: 800 });
+	expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+});
+
+test('career previews change on refresh and match each selected pet', async ({ page }) => {
+	await page.addInitScript(() => { Math.random = () => 0; });
+	await page.goto('/');
+	const title = page.locator('#preview-title');
+	const art = page.locator('#preview-art');
+	for (let index = 0; index < 3; index++) {
+		const previousTitle = await title.textContent();
+		await page.reload();
+		await expect(title).not.toHaveText(previousTitle);
+		await expect(page.locator('#species-options input[value="blobby"]')).toBeChecked();
+		await expect(art).toHaveAttribute('aria-label', /Blobby/);
+	}
+	for (const pet of ['cat', 'dog', 'blobby']) {
+		const previousTitle = await title.textContent();
+		await page.locator(`#species-options input[value="${pet}"]`).check();
+		await expect(title).not.toHaveText(previousTitle);
+		const currentTitle = await title.textContent();
+		const currentCareer = careers.find(career => career.title === currentTitle);
+		expect(currentCareer).toBeDefined();
+		await expect(page.locator('#preview-description')).toHaveText(currentCareer.traits[0]);
+		await expect(art).toHaveAttribute('aria-label', new RegExp(pet, 'i'));
+		const source = pet === 'blobby' ? `assets/blobby-careers/${currentCareer.id}.png` : `assets/pet-portraits/${pet}-${currentCareer.id}.webp`;
+		await expect(art.locator('img')).toHaveAttribute('src', source);
+		await art.locator('img').evaluate(image => image.decode());
+		await expect(art.locator('svg')).toHaveCount(0);
+	}
+});
+
+test('default names follow the pet and preserve a custom name', async ({ page }) => {
 	await page.emulateMedia({ reducedMotion: 'reduce' });
 	await page.goto('/');
-	await expect(page.locator('.species-symbol img').first()).toBeVisible();
-	expect(await page.locator('.species-symbol img').evaluateAll(images => images.every(image => image.complete && image.naturalWidth > 0))).toBe(true);
-	const artResponse = await page.request.get('assets/pet-careers.png');
-	expect(artResponse.ok()).toBe(true);
-	for (const pet of ['cat', 'dog']) {
-		await expect(page.locator(`#species-options input[value="${pet}"]`).locator('..').locator('img')).toHaveAttribute('src', `assets/${pet}.webp`);
+	const nameField = page.locator('#pet-name');
+	for (const [pet, name] of [['blobby', 'Blobby'], ['cat', 'Kitty'], ['dog', 'Rover']]) {
 		await page.locator(`#species-options input[value="${pet}"]`).check();
-		await expect(page.locator('#welcome-portrait')).toHaveAttribute('src', `assets/pet-portraits/${pet}-cardboard.webp`);
-		await page.locator('#welcome-portrait').evaluate(image => image.decode());
-		await page.getByRole('button', { name: 'Begin the paw-formance review' }).click();
-		await expect(page.locator('#interview-mascot')).toHaveAttribute('aria-label', new RegExp(pet));
-		await expect(page.locator('#interview-mascot img')).toHaveAttribute('src', `assets/${pet}.webp`);
+		await expect(nameField).toHaveAttribute('placeholder', name);
+		await nameField.fill('   ');
+		await page.locator('.start-button').click();
+		await expect(page.locator('#candidate-name')).toHaveText(name);
 		for (let index = 0; index < 6; index++) {
 			await page.locator('#answers input').first().check();
 			await page.locator('#next').click();
 		}
-		await expect(page.locator('#result-art')).toHaveAttribute('aria-label', new RegExp(pet));
+		await expect(page.locator('#result-title')).toHaveText(`${name}, you're hired.`);
+		await page.locator('#restart').click();
+		await expect(nameField).toHaveAttribute('placeholder', 'Blobby');
+		await expect(nameField).toHaveValue('');
+	}
+	await nameField.fill('Mochi');
+	for (const pet of ['cat', 'dog', 'blobby']) {
+		await page.locator(`#species-options input[value="${pet}"]`).check();
+		await expect(nameField).toHaveValue('Mochi');
+	}
+	await page.locator('.start-button').click();
+	await expect(page.locator('#candidate-name')).toHaveText('Mochi');
+});
+
+test('candidate portraits match the selection cards and fit narrow screens with reduced motion', async ({ page }) => {
+	await page.emulateMedia({ reducedMotion: 'reduce' });
+	await page.goto('/');
+	expect(await page.locator('.hero-card').evaluate(element => getComputedStyle(element).animationName)).toBe('none');
+	await expect(page.locator('.species-symbol img').first()).toBeVisible();
+	expect(await page.locator('.species-symbol img').evaluateAll(images => images.every(image => image.complete && image.naturalWidth > 0))).toBe(true);
+	const artResponse = await page.request.get('assets/pet-careers.png');
+	expect(artResponse.ok()).toBe(true);
+	for (const pet of ['blobby', 'cat', 'dog']) {
+		const selectionImage = page.locator(`#species-options input[value="${pet}"]`).locator('..').locator('img');
+		const genericSource = pet === 'blobby' ? 'assets/blobby.png' : `assets/${pet}.webp`;
+		await expect(selectionImage).toHaveAttribute('src', genericSource);
+		await page.locator(`#species-options input[value="${pet}"]`).check();
+		await page.locator('#preview-art img').evaluate(image => image.decode());
+		await page.getByRole('button', { name: 'Begin the paw-formance review' }).click();
+		expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+		expect(await page.locator('.answer').first().evaluate(element => getComputedStyle(element).animationName)).toBe('none');
+		await expect(page.locator('#interview-mascot')).toHaveAttribute('aria-label', new RegExp(pet, 'i'));
+		await expect(page.locator('#interview-mascot img')).toHaveAttribute('src', await selectionImage.getAttribute('src'));
+		await page.locator('#interview-mascot img').evaluate(image => image.decode());
+		for (let index = 0; index < 6; index++) {
+			await page.locator('#answers input').first().check();
+			await page.locator('#next').click();
+		}
+		await expect(page.locator('#result-art')).toHaveAttribute('aria-label', new RegExp(pet, 'i'));
 		expect(await page.locator('#result-art').evaluate(element => getComputedStyle(element).animationName)).toBe('none');
 		expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 		await page.locator('#restart').click();
-		await expect(page.locator('#welcome-portrait')).toHaveAttribute('src', 'assets/blobby-careers/cardboard.png');
+		await expect(page.locator('#preview-art')).toHaveAttribute('aria-label', /Blobby/);
 	}
 	await page.setViewportSize({ width: 320, height: 800 });
+	expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+	await page.getByRole('button', { name: 'Begin the paw-formance review' }).click();
+	expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+	for (let index = 0; index < 6; index++) {
+		await page.locator('#answers input').first().check();
+		await page.locator('#next').click();
+	}
+	expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+	await page.locator('#restart').click();
+	await page.getByRole('link', { name: 'Privacy & credits' }).click();
+	await expect(page.getByRole('heading', { name: /Privacy.*credits/ })).toBeVisible();
 	expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 });
 
 test('all 72 pet and career combinations render distinct, loaded artwork instead of emoji badges', async ({ page }) => {
 	test.setTimeout(240000);
+	await page.emulateMedia({ reducedMotion: 'reduce' });
 	let currentCareer;
 	const failures = [];
 	const hashes = new Set();
@@ -152,6 +307,7 @@ test('disabled or broken JavaScript cannot submit a pet name', async ({ browser,
 		await expect(page.locator('#pet-name')).toBeDisabled();
 		await expect(page.getByRole('button', { name: 'Begin the paw-formance review' })).toBeDisabled();
 		await expect(page.locator('#startup-status')).toBeVisible();
+		await expect(page.locator('.journey button:enabled')).toHaveCount(0);
 		expect(navigations).toHaveLength(1);
 		await context.close();
 	}

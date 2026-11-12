@@ -58,8 +58,8 @@ const PetCareers = (() => {
 	];
 	const species = [
 		{ id: 'blobby', label: 'Blobby', defaultName: 'Blobby', symbol: '💙', pun: 'Tiny morale officer' },
-		{ id: 'cat', label: 'Cat', defaultName: 'Your cat', symbol: '🐱', pun: 'Purr-fessional' },
-		{ id: 'dog', label: 'Dog', defaultName: 'Your dog', symbol: '🐶', pun: 'Paw-fessional' }
+		{ id: 'cat', label: 'Cat', defaultName: 'Kitty', symbol: '🐱', pun: 'Purr-fessional' },
+		{ id: 'dog', label: 'Dog', defaultName: 'Rover', symbol: '🐶', pun: 'Paw-fessional' }
 	];
 	const q = (id, prompt, options) => ({
 		id, prompt, options: options.map(([careerId, text]) => ({ id: `${id}-${careerId}`, careerId, text }))

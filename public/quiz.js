@@ -5,7 +5,7 @@
 'use strict';
 
 (() => {
-	const { species, createInterview, determineCareer, interviewLength } = PetCareers;
+	const { species, careers, createInterview, determineCareer, interviewLength } = PetCareers;
 	const byId = id => document.getElementById(id);
 	const views = ['welcome', 'interview', 'result'];
 	let answers = [];
@@ -14,6 +14,7 @@
 	let petName = '';
 	let questions = [];
 	let previousQuestionIds = [];
+	let previewCareerId = window.history.state?.careerPreview;
 	byId('progress').max = interviewLength;
 	const encouragement = ['First im-purr-essions count.', 'Excellent. Very paw-suasive.', 'The hiring committee is taking notes.', 'An impressive pawrtfolio is emerging.', 'Almost offish-ially qualified.', 'One last reference. No thumbs required.'];
 
@@ -25,6 +26,7 @@
 		input.value = pet.id;
 		input.checked = index === 0;
 		input.defaultChecked = index === 0;
+		input.addEventListener('change', () => renderCandidateSetup(pet));
 		const symbol = document.createElement('span');
 		symbol.className = 'species-symbol';
 		symbol.setAttribute('aria-hidden', 'true');
@@ -41,6 +43,7 @@
 			symbol.append(image);
 		}
 		const text = document.createElement('span');
+		text.className = 'species-copy';
 		const title = document.createElement('strong');
 		title.textContent = pet.label;
 		const pun = document.createElement('small');
@@ -50,24 +53,7 @@
 		return label;
 	}));
 
-	function updateWelcomePreview() {
-		const selected = byId('species-options').querySelector('input:checked').value;
-		const preview = byId('welcome-portrait');
-		if (selected === 'blobby') {
-			preview.src = 'assets/blobby-careers/cardboard.png';
-			preview.className = 'blobby-career';
-			preview.alt = BlobbyOutfits.cardboard.description;
-		} else {
-			preview.src = `assets/pet-portraits/${selected}-cardboard.webp`;
-			preview.className = 'pet-portrait';
-			preview.alt = `Storybook illustration of a ${selected} in a navy suit, supervising a cardboard box.`;
-		}
-	}
-
-	byId('species-options').addEventListener('change', updateWelcomePreview);
-
-	function renderSticker(target, career) {
-		const pet = species[speciesIndex];
+	function renderSticker(target, career, pet = species[speciesIndex]) {
 		if (pet.id === 'blobby') {
 			const image = document.createElement('img');
 			image.alt = '';
@@ -100,10 +86,41 @@
 			: `Plain illustrated ${pet.id} at the career interview, with no job outfit yet.`);
 	}
 
+	function renderCareerPreview(pet) {
+		const candidates = careers.filter(career => career.id !== previewCareerId);
+		const career = candidates[Math.floor(Math.random() * candidates.length)];
+		renderSticker(byId('preview-art'), career, pet);
+		byId('preview-title').textContent = career.title;
+		byId('preview-description').textContent = career.traits[0];
+		byId('preview-number').textContent = String(careers.indexOf(career) + 1).padStart(2, '0');
+		previewCareerId = career.id;
+		window.history.replaceState({ careerPreview: career.id }, '');
+	}
+
+	function renderCandidateSetup(pet) {
+		byId('pet-name').placeholder = pet.defaultName;
+		renderCareerPreview(pet);
+	}
+
+	function updateJourney() {
+		const complete = questions.length === interviewLength && questions.every((question, index) =>
+			question.options.some(option => option.id === answers[index]));
+		document.querySelectorAll('.journey [data-view]').forEach(step => {
+			step.disabled = step.dataset.view === 'result' && !complete;
+			if (step.dataset.view === document.body.dataset.view) {
+				step.setAttribute('aria-current', 'step');
+			} else {
+				step.removeAttribute('aria-current');
+			}
+		});
+	}
+
 	function show(view, focusId) {
 		for (const id of views) {
 			byId(id).hidden = id !== view;
 		}
+		document.body.dataset.view = view;
+		updateJourney();
 		byId(focusId).focus();
 		window.scrollTo({ top: 0, behavior: 'instant' });
 	}
@@ -114,10 +131,11 @@
 		byId('question-count').textContent = `Question ${questionIndex + 1} of ${questions.length}`;
 		byId('progress').value = questionIndex + 1;
 		byId('encouragement').textContent = encouragement[questionIndex];
+		byId('candidate-name').textContent = petName || species[speciesIndex].defaultName;
 		renderSticker(byId('interview-mascot'));
 		const fieldset = byId('answers');
 		fieldset.querySelectorAll('label').forEach(label => label.remove());
-		question.options.forEach(option => {
+		question.options.forEach((option, index) => {
 			const label = document.createElement('label');
 			label.className = 'answer';
 			const input = document.createElement('input');
@@ -128,13 +146,18 @@
 			input.addEventListener('change', () => {
 				answers[questionIndex] = option.id;
 				byId('answer-error').hidden = true;
+				updateJourney();
 			});
 			const copy = document.createElement('span');
 			copy.textContent = option.text;
-			label.append(input, copy);
+			const letter = document.createElement('span');
+			letter.className = 'answer-letter';
+			letter.setAttribute('aria-hidden', 'true');
+			letter.textContent = String.fromCharCode(65 + index);
+			label.append(letter, copy, input);
 			fieldset.append(label);
 		});
-		byId('next').textContent = questionIndex === questions.length - 1 ? 'Paw-sitively ready. Reveal their career!' : 'Next question →';
+		byId('next-label').textContent = questionIndex === questions.length - 1 ? 'Reveal their career' : 'Next question';
 		byId('answer-error').hidden = true;
 		show('interview', 'question-title');
 	}
@@ -155,6 +178,16 @@
 		}));
 		show('result', 'result-title');
 	}
+
+	byId('step-meet').addEventListener('click', () => show('welcome', 'pet-name'));
+	byId('step-interview').addEventListener('click', () => {
+		if (questions.length === 0) {
+			byId('start-form').requestSubmit();
+		} else {
+			renderQuestion();
+		}
+	});
+	byId('step-result').addEventListener('click', renderResult);
 
 	byId('start-form').addEventListener('submit', event => {
 		event.preventDefault();
@@ -202,13 +235,16 @@
 
 	byId('restart').addEventListener('click', () => {
 		answers = [];
+		questions = [];
 		questionIndex = 0;
 		speciesIndex = 0;
 		petName = '';
 		byId('start-form').reset();
-		updateWelcomePreview();
+		renderCandidateSetup(species[0]);
 		show('welcome', 'pet-name');
 	});
+	renderCandidateSetup(species[0]);
+	updateJourney();
 	byId('start-controls').disabled = false;
 	byId('startup-status').hidden = true;
 })();

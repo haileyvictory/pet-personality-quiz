@@ -34,6 +34,23 @@ desktop and mobile, keyboard selection, missing answers, name injection,
 back/revise/replay flows, artwork, overflow, reduced motion, and fail-closed
 startup when JavaScript is unavailable.
 
+## Design
+
+The pet career bureau pairs warm ivory and plum typography with violet, citrus,
+and peach accents. The candidate setup, interview, appointment card, and credits
+share the same responsive visual system. A three-step indicator follows the
+interview, and answer cards preserve native radio-button keyboard controls.
+The header steps return to Meet, start or resume the Interview, and reopen
+Hired without clearing answers. Hired unlocks once all six answers are selected.
+Starting a fresh pet resets the interview and its result.
+The talent file shows a fresh sample career on refresh and whenever a different
+pet is selected. It defaults to Blobby and shares the result artwork renderer.
+Suggested names are Blobby, Kitty, and Rover. Switching pets preserves any
+custom name; leaving the field blank uses the selected pet's suggested name.
+Subtle floating artwork, staggered answer entrances, and button transitions
+respect the device's reduced-motion preference. Fonts, decoration, and motion
+use system fonts and local CSS only, with no third-party requests.
+
 ## Structure
 
 - `public/index.html`: quiz layout and startup privacy safeguards.
@@ -72,10 +89,9 @@ All 24 careers have a full-size storybook illustration for each animal.
 The original dog executive, snack inspector, and neighborhood lookout
 portraits are preserved. All 24 cat career portraits have cheerful expressions,
 with their outfits and props retained in the same warm storybook style.
-Selection cards show the
-selected animal without clothes or job props, and
-interview mascots remain plain until the career reveal. The large welcome
-preview showcases the selected pet as Chief Cardboard Officer. Plain portraits live
+Selection cards and interview mascots use the same plain animal image without
+clothes or job props. The large welcome preview showcases a fresh career for
+the selected pet on refresh and selection changes. Plain portraits live
 in `public/assets/cat.webp` and `public/assets/dog.webp`; Blobby uses the
 original unaccessorized sprite. Results show the pet's matched career artwork.
 
@@ -97,6 +113,9 @@ Browser tests exercise all 72 species/career combinations on desktop and mobile.
 
 Names and answers stay in page memory. They are never uploaded, stored in the
 URL, or saved to cookies or browser storage. Reloading clears the interview.
+Only the last showcase career ID is kept in the current page's history entry
+to prevent consecutive preview repeats on refresh. Names, answers, and the
+selected pet are never saved there.
 The optional name is rendered as text, never HTML. Startup controls remain
 disabled until event handlers are ready, and the site's content security policy
 blocks form navigation and application network connections.
