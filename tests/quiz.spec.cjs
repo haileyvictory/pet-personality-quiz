@@ -101,11 +101,15 @@ test('stage navigation starts, resumes, and revisits the quiz without losing ans
 	await expect(page.locator('#pet-name')).toHaveValue('Mochi');
 	await expect(meet).toHaveAttribute('aria-current', 'step');
 	await expect(hired).toBeDisabled();
+	await page.locator('#species-options input[value="cat"]').check();
+	await page.locator('#pet-name').fill('Maple');
 	await interview.focus();
 	await page.keyboard.press('Space');
 	await expect(page.locator('#question-title')).toBeFocused();
 	await expect(page.locator('#question-title')).toHaveText(resumedPrompt);
 	await expect(page.locator('#answers input:checked')).toHaveValue(resumedAnswer);
+	await expect(page.locator('#candidate-name')).toHaveText('Maple');
+	await expect(page.locator('#interview-mascot img')).toHaveAttribute('src', 'assets/cat.webp');
 	for (let index = 1; index < 6; index++) {
 		prompts.push(await page.locator('#question-title').textContent());
 		await page.locator('#answers input[value$="-cardboard"]').check();
@@ -113,16 +117,22 @@ test('stage navigation starts, resumes, and revisits the quiz without losing ans
 	}
 	await expect(hired).toBeEnabled();
 	await hired.click();
-	await expect(page.locator('#result-title')).toHaveText("Mochi, you're hired.");
+	await expect(page.locator('#result-title')).toHaveText("Maple, you're hired.");
 	await expect(page.locator('#career-title')).toHaveText('Chief Cardboard Officer');
 	await meet.click();
 	await expect(page.locator('#welcome')).toBeVisible();
+	await page.locator('#species-options input[value="dog"]').check();
+	await page.locator('#pet-name').fill('');
 	await hired.click();
 	await expect(page.locator('#result-title')).toBeFocused();
+	await expect(page.locator('#result-title')).toHaveText("Rover, you're hired.");
+	await expect(page.locator('#result-art img')).toHaveAttribute('src', 'assets/pet-portraits/dog-cardboard.webp');
 	await expect(hired).toHaveAttribute('aria-current', 'step');
 	await interview.click();
 	await expect(page.locator('#question-count')).toHaveText('Question 6 of 6');
 	await expect(page.locator('#answers input[value$="-cardboard"]')).toBeChecked();
+	await expect(page.locator('#candidate-name')).toHaveText('Rover');
+	await expect(page.locator('#interview-mascot img')).toHaveAttribute('src', 'assets/dog.webp');
 	await hired.click();
 	await page.locator('#edit-answers').click();
 	for (let index = 0; index < 6; index++) {

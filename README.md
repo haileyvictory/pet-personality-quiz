@@ -42,6 +42,7 @@ share the same responsive visual system. A three-step indicator follows the
 interview, and answer cards preserve native radio-button keyboard controls.
 The header steps return to Meet, start or resume the Interview, and reopen
 Hired without clearing answers. Hired unlocks once all six answers are selected.
+Changes to the pet or name on Meet also update resumed interviews and results.
 Starting a fresh pet resets the interview and its result.
 The talent file shows a fresh sample career on refresh and whenever a different
 pet is selected. It defaults to Blobby and shares the result artwork renderer.

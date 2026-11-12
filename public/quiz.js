@@ -179,24 +179,32 @@
 		show('result', 'result-title');
 	}
 
+	function updateCandidateFromForm() {
+		const selected = new FormData(byId('start-form')).get('species');
+		speciesIndex = species.findIndex(pet => pet.id === selected);
+		if (speciesIndex === -1) {
+			throw new Error('Choose a supported pet type before starting.');
+		}
+		petName = byId('pet-name').value.trim();
+	}
+
 	byId('step-meet').addEventListener('click', () => show('welcome', 'pet-name'));
 	byId('step-interview').addEventListener('click', () => {
 		if (questions.length === 0) {
 			byId('start-form').requestSubmit();
 		} else {
+			updateCandidateFromForm();
 			renderQuestion();
 		}
 	});
-	byId('step-result').addEventListener('click', renderResult);
+	byId('step-result').addEventListener('click', () => {
+		updateCandidateFromForm();
+		renderResult();
+	});
 
 	byId('start-form').addEventListener('submit', event => {
 		event.preventDefault();
-		petName = byId('pet-name').value.trim();
-		const selected = new FormData(event.currentTarget).get('species');
-		speciesIndex = species.findIndex(pet => pet.id === selected);
-		if (speciesIndex === -1) {
-			throw new Error('Choose a supported pet type before starting.');
-		}
+		updateCandidateFromForm();
 		answers = [];
 		questionIndex = 0;
 		questions = createInterview(previousQuestionIds);
