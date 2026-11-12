@@ -69,9 +69,10 @@ to take the quiz.
 ## Cat and dog portraits
 
 All 24 careers have a full-size storybook illustration for each animal.
-The six original box executive, snack inspector, and neighborhood lookout
-portraits are preserved as the main art for those jobs. The other 42 portraits
-were prepared in the same warm illustrated style. Selection cards show the
+The original dog executive, snack inspector, and neighborhood lookout
+portraits are preserved. All 24 cat career portraits have cheerful expressions,
+with their outfits and props retained in the same warm storybook style.
+Selection cards show the
 selected animal without clothes or job props, and
 interview mascots remain plain until the career reveal. The large welcome
 preview showcases the selected pet as Chief Cardboard Officer. Plain portraits live
@@ -83,11 +84,13 @@ No image service is called at runtime. To import reviewed four-column,
 six-row illustration sheets locally, run:
 
 ```sh
-node scripts/import-portraits.cjs path/to/cat-sheet.png path/to/dog-sheet.png
+node scripts/import-portraits.cjs path/to/cat-sheet.png path/to/dog-sheet.png path/to/happy-cat-sheet.png
 ```
 
-The importer always takes the original six portraits from `pet-careers.png`,
-not from newly generated sheets. Review every exported crop before publishing.
+The optional third sheet replaces all cat portraits using an evenly divided
+four-column, six-row grid in engine career order. Without it, the importer
+preserves the original three cat portraits. The three original dog portraits
+always come from `pet-careers.png`. Review every exported crop before publishing.
 Browser tests exercise all 72 species/career combinations on desktop and mobile.
 
 ## Privacy

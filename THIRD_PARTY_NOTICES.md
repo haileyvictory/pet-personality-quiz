@@ -35,10 +35,11 @@ atlas is bundled locally; no image-generation service is called by the app.
 Nonessential embedded metadata is removed from the distributed PNG.
 
 `public/assets/pet-portraits/` contains 48 optimized WebP illustrations:
-six crops of the original cat/dog atlas and 42 newly prepared AI illustrations
-matching its warm storybook style. The original snack-inspector cat, not the
-incorrect dog cell in the newly generated cat contact sheet, is used for
-`cat-snacks.webp`. Only reviewed individual portraits are distributed; the
+three crops of the original dog atlas and 45 prepared AI illustrations
+matching its warm storybook style. All 24 cat portraits were edited to have
+cheerful expressions while retaining their career outfits and props.
+The snack inspector is an orange cat, not a dog.
+Only reviewed individual portraits are distributed; the
 generated contact sheets are not included. Re-encoding removes source metadata.
 
 `public/assets/cat.webp` and `public/assets/dog.webp` are prepared AI-generated

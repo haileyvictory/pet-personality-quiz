@@ -6,9 +6,9 @@ const { chromium } = require('playwright');
 const { careers } = require('../public/engine.js');
 
 async function main() {
-	const [catFile, dogFile] = process.argv.slice(2);
+	const [catFile, dogFile, happyCatFile] = process.argv.slice(2);
 	if (!catFile || !dogFile) {
-		throw new Error('Usage: node scripts/import-portraits.cjs <cat-sheet.png> <dog-sheet.png>');
+		throw new Error('Usage: node scripts/import-portraits.cjs <cat-sheet.png> <dog-sheet.png> [happy-cat-sheet.png]');
 	}
 	const root = path.resolve(__dirname, '..');
 	const encode = async filename => `data:image/png;base64,${(await fs.readFile(filename)).toString('base64')}`;
@@ -17,6 +17,7 @@ async function main() {
 		dog: await encode(dogFile),
 		original: await encode(path.join(root, 'public', 'assets', 'pet-careers.png'))
 	};
+	if (happyCatFile) sources.happyCat = await encode(happyCatFile);
 	const browser = await chromium.launch();
 	try {
 		const page = await browser.newPage();
@@ -32,10 +33,16 @@ async function main() {
 			for (const species of ['cat', 'dog']) {
 				for (const [index, career] of careers.entries()) {
 					const classicColumn = { cardboard: 0, snacks: 1, surveillance: 2 }[career.id];
-					const classic = classicColumn !== undefined;
-					const image = classic ? images.original : images[species];
+					const happyCat = species === 'cat' && images.happyCat;
+					const classic = !happyCat && classicColumn !== undefined;
+					const image = happyCat || (classic ? images.original : images[species]);
 					let x, y, width, height;
-					if (classic) {
+					if (happyCat) {
+						width = image.width / 4;
+						height = image.height / 6;
+						x = (index % 4) * width;
+						y = Math.floor(index / 4) * height;
+					} else if (classic) {
 						width = image.width / 3;
 						height = image.height / 3;
 						x = classicColumn * width;
@@ -68,7 +75,7 @@ async function main() {
 		for (const portrait of portraits) {
 			await fs.writeFile(path.join(destination, `${portrait.species}-${portrait.id}.webp`), Buffer.from(portrait.bytes, 'base64'));
 		}
-		console.log(`Imported ${portraits.length} portraits, including all six original cat/dog illustrations.`);
+		console.log(`Imported ${portraits.length} portraits${happyCatFile ? ' with happy cat expressions' : ', including all six original cat/dog illustrations'}.`);
 	} finally {
 		await browser.close();
 	}
