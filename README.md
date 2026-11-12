@@ -72,8 +72,10 @@ All 24 careers have a full-size storybook illustration for each animal.
 The six original box executive, snack inspector, and neighborhood lookout
 portraits are preserved as the main art for those jobs. The other 42 portraits
 were prepared in the same warm illustrated style. Selection cards and the
-welcome preview show the selected animal, and interview mascots use portraits
-rather than generic vector stickers.
+welcome preview show the selected animal without clothes or job props, and
+interview mascots remain plain until the career reveal. Plain portraits live
+in `public/assets/cat.webp` and `public/assets/dog.webp`; Blobby uses the
+original unaccessorized sprite. Career artwork appears only on the result.
 
 The committed 480-pixel WebP images live in `public/assets/pet-portraits/`.
 No image service is called at runtime. To import reviewed four-column,

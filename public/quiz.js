@@ -35,7 +35,7 @@
 			symbol.append(image);
 		} else {
 			const image = document.createElement('img');
-			image.src = `assets/pet-portraits/${pet.id}-cardboard.webp`;
+			image.src = `assets/${pet.id}.webp`;
 			image.alt = '';
 			image.className = 'pet-option';
 			symbol.append(image);
@@ -54,13 +54,13 @@
 		const selected = byId('species-options').querySelector('input:checked').value;
 		const preview = byId('welcome-portrait');
 		if (selected === 'blobby') {
-			preview.src = 'assets/blobby-careers/cardboard.png';
+			preview.src = 'assets/blobby.png';
 			preview.className = 'blobby-career';
-			preview.alt = BlobbyOutfits.cardboard.description;
+			preview.alt = 'Plain blue Blobby, ready to discover a career.';
 		} else {
-			preview.src = `assets/pet-portraits/${selected}-cardboard.webp`;
+			preview.src = `assets/${selected}.webp`;
 			preview.className = 'pet-portrait';
-			preview.alt = `Original storybook illustration of a ${selected} in a navy suit, supervising a cardboard box.`;
+			preview.alt = `Plain ${selected === 'cat' ? 'fluffy orange cat' : 'golden retriever dog'}, ready to discover a career.`;
 		}
 	}
 
@@ -90,14 +90,14 @@
 			return;
 		}
 		const image = document.createElement('img');
-		image.src = `assets/pet-portraits/${pet.id}-${career ? career.id : 'cardboard'}.webp`;
+		image.src = career ? `assets/pet-portraits/${pet.id}-${career.id}.webp` : `assets/${pet.id}.webp`;
 		image.className = 'pet-portrait';
 		image.width = image.height = 480;
 		image.alt = '';
 		target.replaceChildren(image);
 		target.setAttribute('aria-label', career
 			? `Storybook illustration of a ${pet.id === 'cat' ? 'fluffy orange cat' : 'golden retriever dog'} dressed as ${career.title}, with job-specific clothing and props.`
-			: `Illustrated ${pet.id} in a navy suit at the career interview.`);
+			: `Plain illustrated ${pet.id} at the career interview, with no job outfit yet.`);
 	}
 
 	function show(view, focusId) {

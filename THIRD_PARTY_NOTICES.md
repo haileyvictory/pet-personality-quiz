@@ -41,6 +41,11 @@ incorrect dog cell in the newly generated cat contact sheet, is used for
 `cat-snacks.webp`. Only reviewed individual portraits are distributed; the
 generated contact sheets are not included. Re-encoding removes source metadata.
 
+`public/assets/cat.webp` and `public/assets/dog.webp` are prepared AI-generated
+plain animal illustrations in the same storybook style, without costumes or
+job props. They appear in selection, welcome, and interview views before a
+career has been determined. They contain no source generation metadata.
+
 ## Code
 
 The quiz code originated in the standalone quiz
