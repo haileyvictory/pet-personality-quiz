@@ -71,11 +71,12 @@ to take the quiz.
 All 24 careers have a full-size storybook illustration for each animal.
 The six original box executive, snack inspector, and neighborhood lookout
 portraits are preserved as the main art for those jobs. The other 42 portraits
-were prepared in the same warm illustrated style. Selection cards and the
-welcome preview show the selected animal without clothes or job props, and
-interview mascots remain plain until the career reveal. Plain portraits live
+were prepared in the same warm illustrated style. Selection cards show the
+selected animal without clothes or job props, and
+interview mascots remain plain until the career reveal. The large welcome
+preview showcases the selected pet as Chief Cardboard Officer. Plain portraits live
 in `public/assets/cat.webp` and `public/assets/dog.webp`; Blobby uses the
-original unaccessorized sprite. Career artwork appears only on the result.
+original unaccessorized sprite. Results show the pet's matched career artwork.
 
 The committed 480-pixel WebP images live in `public/assets/pet-portraits/`.
 No image service is called at runtime. To import reviewed four-column,

@@ -43,7 +43,7 @@ generated contact sheets are not included. Re-encoding removes source metadata.
 
 `public/assets/cat.webp` and `public/assets/dog.webp` are prepared AI-generated
 plain animal illustrations in the same storybook style, without costumes or
-job props. They appear in selection, welcome, and interview views before a
+job props. They appear in selection and interview views before a
 career has been determined. They contain no source generation metadata.
 
 ## Code

@@ -70,7 +70,7 @@ test('cat and dog artwork loads, and the page fits narrow screens and reduced mo
 	for (const pet of ['cat', 'dog']) {
 		await expect(page.locator(`#species-options input[value="${pet}"]`).locator('..').locator('img')).toHaveAttribute('src', `assets/${pet}.webp`);
 		await page.locator(`#species-options input[value="${pet}"]`).check();
-		await expect(page.locator('#welcome-portrait')).toHaveAttribute('src', `assets/${pet}.webp`);
+		await expect(page.locator('#welcome-portrait')).toHaveAttribute('src', `assets/pet-portraits/${pet}-cardboard.webp`);
 		await page.locator('#welcome-portrait').evaluate(image => image.decode());
 		await page.getByRole('button', { name: 'Begin the paw-formance review' }).click();
 		await expect(page.locator('#interview-mascot')).toHaveAttribute('aria-label', new RegExp(pet));
@@ -83,7 +83,7 @@ test('cat and dog artwork loads, and the page fits narrow screens and reduced mo
 		expect(await page.locator('#result-art').evaluate(element => getComputedStyle(element).animationName)).toBe('none');
 		expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 		await page.locator('#restart').click();
-		await expect(page.locator('#welcome-portrait')).toHaveAttribute('src', 'assets/blobby.png');
+		await expect(page.locator('#welcome-portrait')).toHaveAttribute('src', 'assets/blobby-careers/cardboard.png');
 	}
 	await page.setViewportSize({ width: 320, height: 800 });
 	expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);

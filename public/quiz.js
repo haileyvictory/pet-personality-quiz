@@ -54,13 +54,13 @@
 		const selected = byId('species-options').querySelector('input:checked').value;
 		const preview = byId('welcome-portrait');
 		if (selected === 'blobby') {
-			preview.src = 'assets/blobby.png';
+			preview.src = 'assets/blobby-careers/cardboard.png';
 			preview.className = 'blobby-career';
-			preview.alt = 'Plain blue Blobby, ready to discover a career.';
+			preview.alt = BlobbyOutfits.cardboard.description;
 		} else {
-			preview.src = `assets/${selected}.webp`;
+			preview.src = `assets/pet-portraits/${selected}-cardboard.webp`;
 			preview.className = 'pet-portrait';
-			preview.alt = `Plain ${selected === 'cat' ? 'fluffy orange cat' : 'golden retriever dog'}, ready to discover a career.`;
+			preview.alt = `Storybook illustration of a ${selected} in a navy suit, supervising a cardboard box.`;
 		}
 	}
 
