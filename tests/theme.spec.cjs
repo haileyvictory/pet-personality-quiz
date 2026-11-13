@@ -60,6 +60,8 @@ test('dark workspace keeps text and keyboard controls readable across the quiz a
 		await page.locator('#next').click();
 	}
 	await checkContrast('#result-title, #personality-title, #personality-tagline, #personality-description, #result-family, #traits li, #mantra, .result-rosette, .primary, .secondary, .onboarding-steps code, .onboarding-steps a');
+	await page.locator('.onboarding-intro .primary').hover();
+	await checkContrast('.onboarding-intro .primary');
 	const palette = await page.locator('#result').getAttribute('data-palette');
 	const palettes = await page.evaluate(() => [...new Set(Object.values(BlobbyOutfits).map(outfit => outfit.color))]);
 	const accentColors = new Set();
@@ -80,6 +82,7 @@ test('dark workspace keeps text and keyboard controls readable across the quiz a
 test('workspace motion settles and reduced motion disables entrances and signal traces', async ({ page }) => {
 	await page.emulateMedia({ reducedMotion: 'no-preference' });
 	await page.goto('/');
+	expect(await page.locator('.showcase-signals use').count()).toBeGreaterThan(0);
 	const count = await page.locator('#welcome').evaluate(async element => {
 		const animations = element.getAnimations({ subtree: true });
 		if (animations.some(animation => animation.effect.getTiming().iterations !== 1)) {

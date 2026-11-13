@@ -98,11 +98,11 @@ input[type="text"]:focus, input:not([type]):focus { border-color: var(--accent);
 input[type="radio"] { accent-color: var(--accent); width: 18px; height: 18px; margin: 0; flex-shrink: 0; cursor: pointer; }
 .primary, .secondary { border-radius: 6px; padding: 14px 20px; min-height: 50px; font-size: 13px; font-weight: 600; transition: transform .2s var(--motion-ease), box-shadow .2s, background .2s, border-color .2s; text-align: center; }
 .primary { display: inline-flex; align-items: center; justify-content: space-between; gap: 20px; border: 1px solid var(--button); background: var(--button); color: white; box-shadow: 0 4px 14px #0078d422; }
-.primary:not(:disabled):hover { background: var(--button-hover); border-color: var(--button-hover); transform: translateY(-1px); box-shadow: 0 6px 20px #0078d433; }
+.primary:not(:disabled):hover { background: var(--button-hover); border-color: var(--button-hover); color: white; transform: translateY(-1px); box-shadow: 0 6px 20px #0078d433; }
 .primary:disabled { opacity: .55; }
 .secondary { background: var(--surface-raised); border: 1px solid var(--control-border); color: var(--text); }
 .secondary:not(:disabled):hover { background: var(--blue-surface); border-color: var(--accent); transform: translateY(-1px); }
-.primary:active, .secondary:active { transform: translateY(0); }
+.primary:not(:disabled):active, .secondary:not(:disabled):active { transform: translateY(0); }
 .button-arrow { font-size: 21px; line-height: 1; font-weight: 400; flex-shrink: 0; }
 .start-button { width: 100%; }
 .privacy { display: flex; justify-content: center; align-items: baseline; gap: 6px; font-size: 10px; color: var(--muted); line-height: 1.6; margin: 12px 0 0; }

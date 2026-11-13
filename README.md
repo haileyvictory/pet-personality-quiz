@@ -81,7 +81,8 @@ Unit tests cover all 24 reachable personalities, the authored scenario bank,
 balanced answer paths, randomized replay, stable answer identities, scoring,
 ties, revisions, and invalid input. Browser tests cover keyboard and stage
 navigation, name injection, errors, replay, all personality images, VS Code
-onboarding, privacy, narrow layouts, reduced motion, and fail-closed startup
+onboarding, privacy, narrow layouts, text and control contrast, printable results,
+reduced motion, and fail-closed startup
 when JavaScript is unavailable.
 
 ## Structure
