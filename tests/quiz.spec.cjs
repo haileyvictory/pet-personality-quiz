@@ -209,6 +209,46 @@ test('all 24 personalities reveal distinct loaded outfits, human descriptions, a
 	expect(failures).toEqual([]);
 });
 
+test('the VS Code invitation is above the fold and setup instructions expand with the keyboard', async ({ page }, testInfo) => {
+	await page.emulateMedia({ reducedMotion: 'reduce' });
+	const viewports = testInfo.project.name === 'mobile'
+		? [{ width: 390, height: 844 }, { width: 320, height: 568 }]
+		: [{ width: 1366, height: 768 }, { width: 1024, height: 768 }];
+	await page.setViewportSize(viewports[0]);
+	await page.goto('/');
+	await page.locator('#quiz-name').fill('Alexandria with a particularly long name');
+	await page.locator('.start-button').click();
+	for (let index = 0; index < 6; index++) {
+		await page.locator('#answers input').first().check();
+		await page.locator('#next').click();
+	}
+	const invitation = page.locator('.vscode-onboarding');
+	const download = invitation.getByRole('link', { name: 'Download VS Code', exact: true });
+	for (const viewport of viewports) {
+		await page.setViewportSize(viewport);
+		await page.getByRole('button', { name: 'Your Blobby', exact: true }).click();
+		await expect(page.locator('#result-title')).toBeFocused();
+		expect(await page.evaluate(() => scrollY)).toBe(0);
+		await expect(invitation.getByRole('heading', { name: 'Bring Blobby into VS Code.' })).toBeInViewport({ ratio: 1 });
+		await expect(download).toBeInViewport({ ratio: 1 });
+		expect(await download.evaluate(element => element.getBoundingClientRect().height)).toBeGreaterThanOrEqual(44);
+		expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+	}
+	const instructions = invitation.locator('.onboarding-steps');
+	await expect(instructions).toBeHidden();
+	const toggle = invitation.locator('summary');
+	await expect(toggle).toBeInViewport({ ratio: 1 });
+	await toggle.focus();
+	await page.keyboard.press('Enter');
+	await expect(instructions).toBeVisible();
+	await expect(instructions).toContainText('/vscode-pet');
+	await expect(instructions).toContainText('Achievements');
+	await expect(instructions.getByRole('link', { name: 'Blobby guide' })).toBeVisible();
+	expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+	await page.keyboard.press('Space');
+	await expect(instructions).toBeHidden();
+});
+
 test('the quiz and VS Code onboarding fit narrow screens and honor reduced motion', async ({ page }) => {
 	await page.emulateMedia({ reducedMotion: 'reduce' });
 	await page.setViewportSize({ width: 320, height: 800 });

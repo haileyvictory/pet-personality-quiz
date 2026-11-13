@@ -59,7 +59,8 @@ test('dark workspace keeps text and keyboard controls readable across the quiz a
 		if (index > 0) await page.locator('#answers input').first().check();
 		await page.locator('#next').click();
 	}
-	await checkContrast('#result-title, #personality-title, #personality-tagline, #personality-description, #result-family, #traits li, #mantra, .result-rosette, .primary, .secondary, .onboarding-steps code, .onboarding-steps a');
+	await page.locator('.onboarding-details summary').click();
+	await checkContrast('#result-title, #personality-title, #personality-tagline, #personality-description, #result-family, #traits li, #mantra, .result-rosette, .primary, .secondary, .onboarding-details summary, .onboarding-steps code, .onboarding-steps a');
 	await page.locator('.onboarding-intro .primary').hover();
 	await checkContrast('.onboarding-intro .primary');
 	const palette = await page.locator('#result').getAttribute('data-palette');

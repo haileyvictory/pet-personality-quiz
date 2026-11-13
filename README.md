@@ -59,8 +59,11 @@ no third-party requests.
 
 ## Meet Blobby in VS Code
 
-The result page links to [Download VS Code](https://code.visualstudio.com/download)
-and introduces `/vscode-pet` in GitHub Copilot Chat. Newer versions may use
+An above-the-fold invitation appears before the result, with a prominent
+[Download VS Code](https://code.visualstudio.com/download) button on desktop and
+mobile. **Already have VS Code? Set up Blobby** expands the instructions without
+pushing the invitation below the result. The steps introduce `/vscode-pet` in
+GitHub Copilot Chat. Newer versions may use
 `/blobby`. Blobby's context menu includes **Achievements** and their accessory
 rewards. See the [official Blobby guide](https://code.visualstudio.com/docs/agents/reference/chat-pet)
 for the current experimental feature.
@@ -80,7 +83,7 @@ Unit tests cover all 24 reachable personalities, the authored scenario bank,
 balanced answer paths, randomized replay, stable answer identities, scoring,
 ties, revisions, and invalid input. Browser tests cover keyboard and stage
 navigation, name injection, errors, replay, all personality images, VS Code
-onboarding, privacy, narrow layouts, text and control contrast, printable results,
+onboarding visibility and keyboard expansion, privacy, narrow layouts, text and control contrast, printable results,
 reduced motion, and fail-closed startup
 when JavaScript is unavailable.
 
