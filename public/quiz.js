@@ -5,105 +5,59 @@
 'use strict';
 
 (() => {
-	const { species, careers, createInterview, determineCareer, interviewLength } = PetCareers;
+	const { personalities, families, createQuiz, determinePersonality, quizLength } = BlobbyQuiz;
 	const byId = id => document.getElementById(id);
-	const views = ['welcome', 'interview', 'result'];
+	const views = ['welcome', 'quiz', 'result'];
 	let answers = [];
 	let questionIndex = 0;
-	let speciesIndex = 0;
-	let petName = '';
 	let questions = [];
 	let previousQuestionIds = [];
-	let previewCareerId = window.history.state?.careerPreview;
-	byId('progress').max = interviewLength;
-	const encouragement = ['First im-purr-essions count.', 'Excellent. Very paw-suasive.', 'The hiring committee is taking notes.', 'An impressive pawrtfolio is emerging.', 'Almost offish-ially qualified.', 'One last reference. No thumbs required.'];
+	let previewId = window.history.state?.blobbyPreview;
+	byId('progress').max = quizLength;
+	const encouragement = [
+		'First instinct. Best instinct. Probably.',
+		'A highly specific vibe is emerging.',
+		'Your inner Blobby is taking notes.',
+		'Excellent. Deeply you-shaped behavior.',
+		'One step closer to a very good hat.',
+		'The final plot twist. Make it yours.'
+	];
 
-	byId('species-options').replaceChildren(...species.map((pet, index) => {
-		const label = document.createElement('label');
-		const input = document.createElement('input');
-		input.type = 'radio';
-		input.name = 'species';
-		input.value = pet.id;
-		input.checked = index === 0;
-		input.defaultChecked = index === 0;
-		input.addEventListener('change', () => renderCandidateSetup(pet));
-		const symbol = document.createElement('span');
-		symbol.className = 'species-symbol';
-		symbol.setAttribute('aria-hidden', 'true');
-		if (pet.id === 'blobby') {
-			const image = document.createElement('img');
-			image.src = 'assets/blobby.png';
-			image.alt = '';
-			symbol.append(image);
-		} else {
-			const image = document.createElement('img');
-			image.src = `assets/${pet.id}.webp`;
-			image.alt = '';
-			image.className = 'pet-option';
-			symbol.append(image);
-		}
-		const text = document.createElement('span');
-		text.className = 'species-copy';
-		const title = document.createElement('strong');
-		title.textContent = pet.label;
-		const pun = document.createElement('small');
-		pun.textContent = pet.pun;
-		text.append(title, pun);
-		label.append(input, symbol, text);
-		return label;
-	}));
-
-	function renderSticker(target, career, pet = species[speciesIndex]) {
-		if (pet.id === 'blobby') {
-			const image = document.createElement('img');
-			image.alt = '';
-			if (career) {
-				const outfit = BlobbyOutfits[career.id];
-				if (!outfit) {
-					throw new Error(`Missing Blobby career outfit: ${career.id}`);
-				}
-				image.src = `assets/blobby-careers/${career.id}.png`;
-				image.className = 'blobby-career';
-				image.width = image.height = 160;
-				target.setAttribute('aria-label', `${outfit.description} Dressed for the ${career.title} career.`);
-			} else {
-				image.src = 'assets/blobby.png';
-				image.className = 'blobby-interview';
-				image.width = image.height = 96;
-				target.setAttribute('aria-label', 'Blobby, the blue VS Code pet, at the career interview.');
-			}
-			target.replaceChildren(image);
-			return;
-		}
+	function renderBlobby(target, personality) {
 		const image = document.createElement('img');
-		image.src = career ? `assets/pet-portraits/${pet.id}-${career.id}.webp` : `assets/${pet.id}.webp`;
-		image.className = 'pet-portrait';
-		image.width = image.height = 480;
 		image.alt = '';
+		if (personality) {
+			const outfit = BlobbyOutfits[personality.id];
+			if (!outfit) {
+				throw new Error(`Missing Blobby personality outfit: ${personality.id}`);
+			}
+			image.src = `assets/blobby-personalities/${personality.id}.png`;
+			image.className = 'blobby-portrait';
+			image.width = image.height = 160;
+			target.setAttribute('aria-label', `${personality.title}. ${outfit.description}`);
+		} else {
+			image.src = 'assets/blobby.png';
+			image.className = 'blobby-avatar';
+			image.width = image.height = 96;
+			target.setAttribute('aria-label', 'Blue Blobby, your tiny guide to the personality quiz.');
+		}
 		target.replaceChildren(image);
-		target.setAttribute('aria-label', career
-			? `Storybook illustration of a ${pet.id === 'cat' ? 'fluffy orange cat' : 'golden retriever dog'} dressed as ${career.title}, with job-specific clothing and props.`
-			: `Plain illustrated ${pet.id} at the career interview, with no job outfit yet.`);
 	}
 
-	function renderCareerPreview(pet) {
-		const candidates = careers.filter(career => career.id !== previewCareerId);
-		const career = candidates[Math.floor(Math.random() * candidates.length)];
-		renderSticker(byId('preview-art'), career, pet);
-		byId('preview-title').textContent = career.title;
-		byId('preview-description').textContent = career.traits[0];
-		byId('preview-number').textContent = String(careers.indexOf(career) + 1).padStart(2, '0');
-		previewCareerId = career.id;
-		window.history.replaceState({ careerPreview: career.id }, '');
-	}
-
-	function renderCandidateSetup(pet) {
-		byId('pet-name').placeholder = pet.defaultName;
-		renderCareerPreview(pet);
+	function renderPreview() {
+		const candidates = personalities.filter(personality => personality.id !== previewId);
+		const personality = candidates[Math.floor(Math.random() * candidates.length)];
+		renderBlobby(byId('preview-art'), personality);
+		byId('preview-title').textContent = personality.title;
+		byId('preview-description').textContent = personality.tagline;
+		byId('preview-number').textContent = String(personalities.indexOf(personality) + 1).padStart(2, '0');
+		byId('blobby-showcase').dataset.palette = BlobbyOutfits[personality.id].color;
+		previewId = personality.id;
+		window.history.replaceState({ blobbyPreview: personality.id }, '');
 	}
 
 	function updateJourney() {
-		const complete = questions.length === interviewLength && questions.every((question, index) =>
+		const complete = questions.length === quizLength && questions.every((question, index) =>
 			question.options.some(option => option.id === answers[index]));
 		document.querySelectorAll('.journey [data-view]').forEach(step => {
 			step.disabled = step.dataset.view === 'result' && !complete;
@@ -131,8 +85,7 @@
 		byId('question-count').textContent = `Question ${questionIndex + 1} of ${questions.length}`;
 		byId('progress').value = questionIndex + 1;
 		byId('encouragement').textContent = encouragement[questionIndex];
-		byId('candidate-name').textContent = petName || species[speciesIndex].defaultName;
-		renderSticker(byId('interview-mascot'));
+		byId('quiz-player').textContent = byId('quiz-name').value.trim() || 'You, in blob form.';
 		const fieldset = byId('answers');
 		fieldset.querySelectorAll('label').forEach(label => label.remove());
 		question.options.forEach((option, index) => {
@@ -157,21 +110,24 @@
 			label.append(letter, copy, input);
 			fieldset.append(label);
 		});
-		byId('next-label').textContent = questionIndex === questions.length - 1 ? 'Reveal their career' : 'Next question';
+		byId('next-label').textContent = questionIndex === questions.length - 1 ? 'Reveal my Blobby' : 'Next question';
 		byId('answer-error').hidden = true;
-		show('interview', 'question-title');
+		show('quiz', 'question-title');
 	}
 
 	function renderResult() {
-		const career = determineCareer(questions, answers);
-		const name = petName || species[speciesIndex].defaultName;
-		byId('result-title').textContent = `${name}, you're hired.`;
-		byId('career-title').textContent = career.title;
-		byId('result-department').textContent = career.department;
-		byId('offer').textContent = career.offer;
-		const art = byId('result-art');
-		renderSticker(art, career);
-		byId('qualifications').replaceChildren(...career.traits.map(trait => {
+		const personality = determinePersonality(questions, answers);
+		const name = byId('quiz-name').value.trim();
+		byId('result-title').textContent = name ? `${name}, meet your Blobby.` : 'Meet your inner Blobby.';
+		byId('personality-title').textContent = personality.title;
+		byId('result-family').textContent = families[personality.family];
+		byId('personality-tagline').textContent = personality.tagline;
+		byId('personality-description').textContent = personality.description;
+		byId('mantra').textContent = personality.mantra;
+		byId('result-style').textContent = BlobbyOutfits[personality.id].style;
+		byId('result').dataset.palette = BlobbyOutfits[personality.id].color;
+		renderBlobby(byId('result-art'), personality);
+		byId('traits').replaceChildren(...personality.traits.map(trait => {
 			const item = document.createElement('li');
 			item.textContent = trait;
 			return item;
@@ -179,39 +135,27 @@
 		show('result', 'result-title');
 	}
 
-	function updateCandidateFromForm() {
-		const selected = new FormData(byId('start-form')).get('species');
-		speciesIndex = species.findIndex(pet => pet.id === selected);
-		if (speciesIndex === -1) {
-			throw new Error('Choose a supported pet type before starting.');
-		}
-		petName = byId('pet-name').value.trim();
+	function startQuiz() {
+		answers = [];
+		questionIndex = 0;
+		questions = createQuiz(previousQuestionIds);
+		previousQuestionIds = questions.map(question => question.id);
+		renderQuestion();
 	}
 
-	byId('step-meet').addEventListener('click', () => show('welcome', 'pet-name'));
-	byId('step-interview').addEventListener('click', () => {
+	byId('step-home').addEventListener('click', () => show('welcome', 'quiz-name'));
+	byId('step-quiz').addEventListener('click', () => {
 		if (questions.length === 0) {
 			byId('start-form').requestSubmit();
 		} else {
-			updateCandidateFromForm();
 			renderQuestion();
 		}
 	});
-	byId('step-result').addEventListener('click', () => {
-		updateCandidateFromForm();
-		renderResult();
-	});
-
+	byId('step-result').addEventListener('click', renderResult);
 	byId('start-form').addEventListener('submit', event => {
 		event.preventDefault();
-		updateCandidateFromForm();
-		answers = [];
-		questionIndex = 0;
-		questions = createInterview(previousQuestionIds);
-		previousQuestionIds = questions.map(question => question.id);
-		renderQuestion();
+		startQuiz();
 	});
-
 	byId('answer-form').addEventListener('submit', event => {
 		event.preventDefault();
 		if (!questions[questionIndex].options.some(option => option.id === answers[questionIndex])) {
@@ -226,32 +170,21 @@
 			renderQuestion();
 		}
 	});
-
 	byId('back').addEventListener('click', () => {
 		if (questionIndex === 0) {
-			show('welcome', 'pet-name');
+			show('welcome', 'quiz-name');
 		} else {
 			questionIndex--;
 			renderQuestion();
 		}
 	});
-
 	byId('edit-answers').addEventListener('click', () => {
 		questionIndex = 0;
 		renderQuestion();
 	});
-
-	byId('restart').addEventListener('click', () => {
-		answers = [];
-		questions = [];
-		questionIndex = 0;
-		speciesIndex = 0;
-		petName = '';
-		byId('start-form').reset();
-		renderCandidateSetup(species[0]);
-		show('welcome', 'pet-name');
-	});
-	renderCandidateSetup(species[0]);
+	byId('restart').addEventListener('click', startQuiz);
+	renderBlobby(byId('quiz-mascot'));
+	renderPreview();
 	updateJourney();
 	byId('start-controls').disabled = false;
 	byId('startup-status').hidden = true;

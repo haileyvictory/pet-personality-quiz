@@ -11,41 +11,26 @@ The original asset credits identify this exact source. Blobby is not
 AI-generated quiz artwork. Use here does not imply endorsement or grant
 trademark rights.
 
-### Career outfits
+### Personality illustrations
 
 The hat atlases in `art-source/accessories/` are Microsoft Corporation artwork
 from the same MIT-licensed
 [public VS Code accessories directory](https://github.com/microsoft/vscode/tree/main/src/vs/workbench/contrib/chat/browser/widget/media/chatPet/accessories).
 Each imported atlas was verified against its public upstream Git blob hash.
 The accompanying [MIT license](LICENSE.txt) applies to these assets and the
-derived outfit PNGs in `public/assets/blobby-careers/`.
+derived outfit PNGs in `public/assets/blobby-personalities/`.
 
-The quiz's career images combine the original body and hats with original
+The quiz's personality images combine the original body and hats with original
 pixel-art props and custom palette variations. The idle head attachment and
 antenna masking follow the public VS Code accessory rig. These are independent
-quiz illustrations, not official career outfits or VS Code achievement unlocks.
+quiz illustrations, not official personality types or VS Code achievement unlocks.
 No VS Code runtime code is shipped. `scripts/build-blobby.cjs` builds the
-composites locally, and every career has an authored visual description.
+composites locally, and every personality has an authored visual description.
 
-## Prepared pet portraits
+## Original quiz writing
 
-`public/assets/pet-careers.png` is original prepared AI-generated artwork made
-for this quiz. It is not a photograph of a person or a user's pet. The image
-atlas is bundled locally; no image-generation service is called by the app.
-Nonessential embedded metadata is removed from the distributed PNG.
-
-`public/assets/pet-portraits/` contains 48 optimized WebP illustrations:
-three crops of the original dog atlas and 45 prepared AI illustrations
-matching its warm storybook style. All 24 cat portraits were edited to have
-cheerful expressions while retaining their career outfits and props.
-The snack inspector is an orange cat, not a dog.
-Only reviewed individual portraits are distributed; the
-generated contact sheets are not included. Re-encoding removes source metadata.
-
-`public/assets/cat.webp` and `public/assets/dog.webp` are prepared AI-generated
-plain animal illustrations in the same storybook style, without costumes or
-job props. They appear in selection and interview views before a
-career has been determined. They contain no source generation metadata.
+The human scenarios, choices, and Blobby personality descriptions are original
+writing for this quiz. No text from another publisher's quizzes is reproduced.
 
 ## Code
 

@@ -4,13 +4,13 @@ const fs = require('node:fs/promises');
 const path = require('node:path');
 const { chromium } = require('playwright');
 const outfits = require('../public/blobby-outfits.js');
-const { careers } = require('../public/engine.js');
+const { personalities } = require('../public/engine.js');
 
 const root = path.resolve(__dirname, '..');
 
 async function build() {
-	if (careers.length !== Object.keys(outfits).length || careers.some(career => !outfits[career.id])) {
-		throw new Error('Every quiz career needs exactly one Blobby outfit.');
+	if (personalities.length !== Object.keys(outfits).length || personalities.some(personality => !outfits[personality.id])) {
+		throw new Error('Every Blobby personality needs exactly one outfit.');
 	}
 	const imageData = async filename => `data:image/png;base64,${(await fs.readFile(filename)).toString('base64')}`;
 	const body = await imageData(path.join(root, 'public', 'assets', 'blobby.png'));
@@ -78,37 +78,30 @@ async function build() {
 				const ink = '#303d52', cream = '#fff0cf', gold = '#e9b64d', pink = '#e8759b', teal = '#317d77', brown = '#996741';
 				const hand = (x, y) => r(x, y, 1, 1, light);
 				switch (outfit.prop) {
-					case 'box':
-						r(5, 16, 11, 3, brown); r(6, 16, 9, 2, '#d6a86f');
-						r(5, 15, 5, 1, '#efca92'); r(11, 15, 5, 1, '#efca92');
-						r(10, 16, 1, 2, cream); r(7, 17, 2, 1, brown);
-						hand(5, 15); hand(15, 15);
+					case 'coffee':
+						r(11, 14, 6, 4, cream); r(12, 13, 4, 1, brown); r(17, 14, 2, 1, ink); r(18, 15, 1, 2, ink); r(17, 17, 2, 1, ink);
+						r(12, 10, 1, 2, '#bcc5d3'); r(14, 9, 1, 2, '#bcc5d3'); hand(10, 15);
 						break;
 					case 'pillow':
 						r(8, 16, 9, 3, '#665e9d'); r(9, 15, 7, 3, '#e5d9fa'); r(10, 16, 5, 1, '#fff1fd');
 						r(16, 3, 1, 3, gold); r(17, 2, 1, 1, gold); r(17, 6, 1, 1, gold);
 						hand(8, 16); hand(16, 16);
 						break;
-					case 'blueprint':
-						r(10, 13, 8, 5, '#355c8a'); r(11, 14, 6, 3, '#b8deeb');
-						r(12, 15, 1, 2, '#355c8a'); r(13, 14, 2, 1, '#355c8a'); r(15, 15, 1, 2, '#355c8a');
-						r(3, 16, 3, 2, '#e2b090'); r(4, 15, 1, 1, '#c88d77'); hand(10, 14);
+					case 'book':
+						r(8, 14, 10, 5, '#5d7358'); r(9, 14, 4, 4, cream); r(14, 14, 3, 4, cream);
+						r(13, 14, 1, 5, brown); r(10, 15, 2, 1, teal); r(15, 16, 1, 1, teal); hand(7, 16); hand(18, 16);
 						break;
 					case 'solar':
 						r(10, 13, 8, 4, ink); r(11, 14, 2, 2, '#9dd7ec'); r(14, 14, 3, 2, '#4e9ec8'); r(13, 17, 2, 1, brown);
 						r(2, 3, 3, 3, gold); r(3, 2, 1, 1, gold); r(3, 6, 1, 1, gold); r(1, 4, 1, 1, gold); r(5, 4, 1, 1, gold); hand(10, 13);
 						break;
-					case 'cookie':
-						r(12, 12, 5, 6, brown); r(11, 13, 7, 4, brown); r(12, 13, 5, 4, '#e9bc7a');
-						r(12, 14, 1, 1, '#694a3b'); r(15, 13, 1, 1, '#694a3b'); r(15, 16, 1, 1, '#694a3b'); r(13, 16, 1, 1, '#694a3b'); hand(11, 15);
-						break;
 					case 'ledger':
 						r(10, 12, 6, 6, '#4c6b68'); r(11, 12, 4, 5, cream);
 						r(12, 13, 2, 1, teal); r(12, 15, 2, 1, teal); r(16, 16, 2, 2, gold); r(17, 15, 2, 1, '#f8d77f'); hand(10, 14);
 						break;
-					case 'broom':
-						r(15, 10, 1, 6, brown); r(14, 15, 3, 1, '#a58039'); r(13, 16, 5, 2, gold);
-						r(9, 17, 4, 1, teal); r(9, 16, 1, 1, teal); r(7, 17, 1, 1, brown); r(5, 16, 1, 1, brown); hand(14, 13);
+					case 'notes':
+						r(9, 15, 4, 4, '#f6cd55'); r(12, 14, 5, 4, '#f6b6ce'); r(10, 16, 2, 1, brown); r(13, 15, 3, 1, '#bb527e');
+						r(3, 3, 3, 1, gold); r(5, 4, 1, 2, gold); r(4, 5, 1, 2, gold); r(4, 8, 1, 1, gold); hand(8, 16);
 						break;
 					case 'cupcake':
 						r(11, 14, 7, 1, cream); r(12, 15, 5, 3, '#b37b5a'); r(13, 15, 1, 3, '#dba979'); r(15, 15, 1, 3, '#dba979');
@@ -119,13 +112,17 @@ async function build() {
 						r(9, 12, 1, 2, '#8fc8e3'); r(14, 12, 1, 2, '#8fc8e3'); hand(7, 12); hand(16, 12);
 						r(2, 8, 4, 5, '#b08561'); r(3, 9, 2, 3, '#b9def0');
 						break;
-					case 'acorn':
-						r(13, 14, 3, 3, '#c38c4e'); r(12, 13, 5, 2, brown); r(14, 12, 1, 1, '#664631');
-						r(3, 14, 5, 4, '#5d7358'); r(4, 14, 3, 3, cream); r(5, 15, 1, 1, brown); hand(12, 15);
+					case 'cloud':
+						r(8, 16, 10, 2, '#dce7ec'); r(9, 15, 8, 2, cream); r(11, 14, 4, 2, cream); hand(7, 16);
+						r(3, 4, 1, 3, gold); r(2, 5, 3, 1, gold); r(16, 3, 1, 3, gold); r(15, 4, 3, 1, gold);
 						break;
-					case 'bell':
-						r(13, 13, 3, 3, gold); r(12, 16, 5, 1, gold); r(14, 17, 1, 1, brown);
-						r(7, 12, 3, 1, ink); r(6, 13, 1, 2, ink); r(10, 13, 1, 2, ink); r(7, 15, 3, 1, ink); r(10, 16, 1, 2, brown); hand(10, 15);
+					case 'spotlight':
+						r(14, 11, 3, 3, ink); r(15, 14, 1, 4, '#9babb4'); r(14, 11, 3, 1, '#9babb4'); hand(14, 15);
+						r(3, 3, 1, 5, gold); r(1, 5, 5, 1, gold); r(2, 4, 3, 3, gold);
+						break;
+					case 'sparkles':
+						r(12, 12, 5, 3, gold); r(13, 15, 3, 1, gold); r(14, 16, 1, 2, gold); r(12, 18, 5, 1, brown);
+						r(11, 12, 1, 3, gold); r(17, 12, 1, 3, gold); r(3, 6, 1, 3, pink); r(2, 7, 3, 1, pink); r(17, 3, 1, 3, gold); r(16, 4, 3, 1, gold); hand(11, 15);
 						break;
 					case 'umbrella':
 						r(11, 6, 6, 1, pink); r(10, 7, 8, 1, pink); r(9, 8, 10, 1, '#b8547d'); r(14, 9, 1, 8, brown); r(13, 16, 1, 1, brown);
@@ -173,14 +170,14 @@ async function build() {
 						break;
 					case 'wrench':
 						r(14, 10, 1, 3, '#9babb4'); r(17, 10, 1, 3, '#9babb4'); r(15, 12, 2, 2, '#9babb4'); r(15, 14, 1, 4, '#9babb4');
-						r(9, 15, 4, 4, '#b8cd4d'); r(10, 15, 1, 1, cream); r(11, 16, 1, 2, cream); hand(14, 15);
+						r(6, 17, 7, 2, ink); r(7, 17, 1, 1, cream); r(9, 17, 1, 1, cream); r(11, 17, 1, 1, cream); r(8, 18, 3, 1, '#9babb4'); hand(14, 15);
 						break;
 					case 'boots':
 						r(4, 18, 13, 1, '#85c5dd'); r(6, 17, 9, 1, '#b6e0eb'); r(6, 16, 3, 2, gold); r(11, 16, 3, 2, gold);
 						r(5, 17, 4, 1, '#c9932e'); r(11, 17, 4, 1, '#c9932e'); r(2, 15, 1, 1, '#85c5dd'); r(17, 14, 1, 1, '#85c5dd');
 						break;
 					default:
-						throw new Error(`Unknown career prop: ${outfit.prop}`);
+						throw new Error(`Unknown personality prop: ${outfit.prop}`);
 				}
 				const rgba = context.getImageData(0, 0, 160, 160).data;
 				if (rgba.some((value, index) => index % 4 === 3 && value !== 0 && value !== 255)) {
@@ -199,12 +196,12 @@ async function build() {
 			}
 			return output;
 		}, { body, hats, outfits });
-		const destination = path.join(root, 'public', 'assets', 'blobby-careers');
+		const destination = path.join(root, 'public', 'assets', 'blobby-personalities');
 		await fs.mkdir(destination, { recursive: true });
 		for (const [id, image] of Object.entries(images)) {
 			await fs.writeFile(path.join(destination, `${id}.png`), Buffer.from(image, 'base64'));
 		}
-		console.log(`Built ${Object.keys(images).length} career outfits at 160 x 160 with hard pixel edges.`);
+		console.log(`Built ${Object.keys(images).length} Blobby personalities at 160 x 160 with hard pixel edges.`);
 	} finally {
 		await browser.close();
 	}

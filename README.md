@@ -1,12 +1,16 @@
-# Pet Personality Quiz
+# Which Blobby are you?
 
-Serious careers. Deeply unserious candidates.
+Small blob. Big personality.
 
-A playful pet-career quiz for Blobby, cats, and dogs. Answer six questions from
-48 authored scenarios to discover one of 24 ridiculous jobs. No accounts,
-backend, API keys, analytics, or runtime dependencies.
+A deeply unserious personality quiz for humans. Answer six randomly selected
+questions from 72 original everyday scenarios to meet one of 24 colorful
+Blobby alter egos. Cozy, chaotic, thoughtful, extra: there is a tiny hat for that.
+No accounts, backend, API keys, analytics, or runtime dependencies.
 
-**[Play the quiz](https://haileyvictory.github.io/pet-personality-quiz/)**
+**[Find your Blobby](https://haileyvictory.github.io/pet-personality-quiz/)**
+
+The existing repository and GitHub Pages URL are retained so shared links still
+work. The app is now Blobby-only, with no animal selection or pet-career results.
 
 ## Run locally
 
@@ -20,6 +24,51 @@ npm start
 Open http://127.0.0.1:4173. The server binds to your own machine only.
 The app is static, so any static server can serve `public/`.
 
+## How the quiz works
+
+Each run shuffles both the question pool and the answer positions. Replaying
+avoids the previous six questions without changing the authored question bank.
+Each of the 24 personalities has twelve answer paths across different scenarios.
+
+Answers vote for a personality and its broader vibe family: grounded,
+organized, creative, expressive, connector, or adventurous. A family vote
+contributes three points and a direct personality vote contributes two.
+The first supporting answer breaks a tie. Results depend on your answers,
+not a random result picker, and revisiting a result does not reroll it.
+Changing an answer recalculates the result.
+
+Home returns to the setup without clearing answers. Quiz starts or resumes the
+current run. Your Blobby unlocks when all six questions have answers.
+Retake with fresh questions immediately starts a new run and keeps your optional
+name. Names are displayed as text, never HTML.
+
+## Design
+
+The VS Code-inspired dark theme pairs graphite editor surfaces with bright blue
+accents and subtle blue and violet glows, following the VS Code website and
+Ignite presentation. Segoe UI headings, Cascadia-style monospace labels, editor
+tabs, and green status badges carry through the setup, quiz, result, onboarding,
+and credits. Each Blobby retains its azure, mint, lilac, peach, honey-gold, or
+rose accent on dark backgrounds.
+
+Restrained slide-in entrances, staggered answers, one-shot signal traces, and
+button transitions respect reduced-motion preferences. Motion settles rather
+than looping, and results remain readable in print. Native radio controls,
+visible focus indicators, and responsive layouts work with keyboard, desktop,
+and mobile. Fonts and effects use system fonts, local SVG, and CSS only, with
+no third-party requests.
+
+## Meet Blobby in VS Code
+
+The result page links to [Download VS Code](https://code.visualstudio.com/download)
+and introduces `/vscode-pet` in GitHub Copilot Chat. Newer versions may use
+`/blobby`. Blobby's context menu includes **Achievements** and their accessory
+rewards. See the [official Blobby guide](https://code.visualstudio.com/docs/agents/reference/chat-pet)
+for the current experimental feature.
+
+Quiz styles are illustrations, not real VS Code achievement unlocks. The quiz
+does not connect to VS Code or change any editor settings.
+
 ## Test
 
 ```sh
@@ -28,124 +77,71 @@ npx playwright install chromium
 npm run test:browser
 ```
 
-The unit tests cover reachable careers, question variety, replay, stable answer
-identities, answer revision, scoring, and invalid input. Browser tests cover
-desktop and mobile, keyboard selection, missing answers, name injection,
-back/revise/replay flows, artwork, overflow, reduced motion, and fail-closed
-startup when JavaScript is unavailable.
-
-## Design
-
-The pet career bureau pairs warm ivory and plum typography with violet, citrus,
-and peach accents. The candidate setup, interview, appointment card, and credits
-share the same responsive visual system. A three-step indicator follows the
-interview, and answer cards preserve native radio-button keyboard controls.
-The header steps return to Meet, start or resume the Interview, and reopen
-Hired without clearing answers. Hired unlocks once all six answers are selected.
-Changes to the pet or name on Meet also update resumed interviews and results.
-Starting a fresh pet resets the interview and its result.
-The talent file shows a fresh sample career on refresh and whenever a different
-pet is selected. It defaults to Blobby and shares the result artwork renderer.
-Suggested names are Blobby, Kitty, and Rover. Switching pets preserves any
-custom name; leaving the field blank uses the selected pet's suggested name.
-Subtle floating artwork, staggered answer entrances, and button transitions
-respect the device's reduced-motion preference. Fonts, decoration, and motion
-use system fonts and local CSS only, with no third-party requests.
+Unit tests cover all 24 reachable personalities, the authored scenario bank,
+balanced answer paths, randomized replay, stable answer identities, scoring,
+ties, revisions, and invalid input. Browser tests cover keyboard and stage
+navigation, name injection, errors, replay, all personality images, VS Code
+onboarding, privacy, narrow layouts, reduced motion, and fail-closed startup
+when JavaScript is unavailable.
 
 ## Structure
 
-- `public/index.html`: quiz layout and startup privacy safeguards.
-- `public/quiz.js`: UI, focus management, answer revision, and replay.
-- `public/engine.js`: pets, questions, careers, and deterministic scoring.
-- `public/quiz.css`: responsive styles, focus indicators, and reduced motion.
-- `public/assets/`: bundled portraits, the original Blobby sprite, and 24 career outfit PNGs.
-- `public/blobby-outfits.js`: job-specific hats, palettes, props, and image descriptions.
+- `public/index.html`: setup, quiz, result, and VS Code onboarding.
+- `public/quiz.js`: rendering, focus management, revision, navigation, and replay.
+- `public/engine.js`: personalities, human scenarios, and deterministic scoring.
+- `public/quiz.css`: responsive design, personality palettes, and reduced motion.
+- `public/blobby-outfits.js`: hats, colors, props, and accessible descriptions.
+- `public/assets/blobby-personalities/`: 24 bundled pixel-art Blobbies.
+- `public/assets/blobby.png`: original unaccessorized Blobby.
 - `art-source/accessories/`: verified public, MIT-licensed VS Code hat atlases.
-- `tests/`: engine and browser regression tests.
+- `tests/`: unit and browser regression tests.
 - `scripts/serve.cjs`: dependency-free local preview server.
 
-## Blobby's career wardrobe
-
-Each of the 24 careers has its own composed pixel-art image: an official
-VS Code-style hat, one of six body palettes, and original job-specific props.
-There are no emoji badges on Blobby's results. Outfits are quiz illustrations,
-not actual VS Code achievement unlocks.
-
-To rebuild the committed PNGs after editing the outfit definitions or pixel art:
+## Rebuild Blobby styles
 
 ```sh
 npx playwright install chromium
 npm run build:art
 ```
 
-The art build uses a local browser canvas with no network requests. It preserves
-the original body geometry, uses the official idle hat anchors, and draws on an
-eight-pixel grid with opaque pixels and transparent backgrounds. Runtime pages
-load the finished static PNGs; no canvas, image service, or build tool is needed
-to take the quiz.
-
-## Cat and dog portraits
-
-All 24 careers have a full-size storybook illustration for each animal.
-The original dog executive, snack inspector, and neighborhood lookout
-portraits are preserved. All 24 cat career portraits have cheerful expressions,
-with their outfits and props retained in the same warm storybook style.
-Selection cards and interview mascots use the same plain animal image without
-clothes or job props. The large welcome preview showcases a fresh career for
-the selected pet on refresh and selection changes. Plain portraits live
-in `public/assets/cat.webp` and `public/assets/dog.webp`; Blobby uses the
-original unaccessorized sprite. Results show the pet's matched career artwork.
-
-The committed 480-pixel WebP images live in `public/assets/pet-portraits/`.
-No image service is called at runtime. To import reviewed four-column,
-six-row illustration sheets locally, run:
-
-```sh
-node scripts/import-portraits.cjs path/to/cat-sheet.png path/to/dog-sheet.png path/to/happy-cat-sheet.png
-```
-
-The optional third sheet replaces all cat portraits using an evenly divided
-four-column, six-row grid in engine career order. Without it, the importer
-preserves the original three cat portraits. The three original dog portraits
-always come from `pet-careers.png`. Review every exported crop before publishing.
-Browser tests exercise all 72 species/career combinations on desktop and mobile.
+The local art build combines the original sprite and official hat atlases with
+six palettes and original personality props on an eight-pixel grid. It checks
+for hard pixel edges and visible eyes. Runtime pages load the committed PNGs;
+no canvas, image service, or art build runs while taking the quiz.
 
 ## Privacy
 
-Names and answers stay in page memory. They are never uploaded, stored in the
-URL, or saved to cookies or browser storage. Reloading clears the interview.
-Only the last showcase career ID is kept in the current page's history entry
-to prevent consecutive preview repeats on refresh. Names, answers, and the
-selected pet are never saved there.
-The optional name is rendered as text, never HTML. Startup controls remain
-disabled until event handlers are ready, and the site's content security policy
-blocks form navigation and application network connections.
+Names and answers stay in page memory. They are never uploaded, put in the URL,
+or saved to cookies or browser storage. Reloading clears the quiz. Only the last
+sample personality ID is kept in the current page's history entry to prevent
+consecutive showcase repeats. No name or answer is saved there.
 
-GitHub Pages still receives normal hosting requests, including network metadata
-such as IP addresses. See [GitHub's privacy statement](https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement).
-Source links leave the app only when you choose to follow them.
+Startup controls remain disabled until handlers are ready. The content security
+policy blocks form navigation and application network connections.
+GitHub Pages still receives normal hosting requests and network metadata, such
+as IP addresses. See [GitHub's privacy statement](https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement).
+External links, including VS Code downloads, are followed only when you choose.
 
 ## Deploy
 
 The `Test and deploy` workflow runs tests and a dependency audit for pull requests
-and main-branch pushes. Actions are pinned to immutable revisions, and Dependabot
-checks for updates monthly. Only `public/` is uploaded as the site. Deployment
-requires a successful test job. In repository Settings > Pages, choose **GitHub Actions** as the source.
-No custom secrets are needed. The default Pages address is
-https://haileyvictory.github.io/pet-personality-quiz/.
+and main-branch pushes. Actions are pinned, and Dependabot checks monthly.
+Only `public/` is uploaded. Deployment requires a successful test job.
+In repository Settings > Pages, choose **GitHub Actions** as the source.
+No custom secrets are needed.
 
 ## Contributing
 
-Keep the app static, keyboard-accessible, and local-only. Do not add analytics,
-uploads, sign-in, secrets, or third-party requests without an explicit product
-and privacy decision. Run both test commands before opening a pull request.
-Never commit `.env` files, local paths, private screenshots, session logs, or
-editor configuration. Report bugs through repository issues without personal
-information.
+Keep the quiz static, keyboard-accessible, and local-only. Author original human
+scenarios and affectionate personality descriptions, not animal questions or
+career assignments. Keep all personalities reachable through distinct questions
+and preserve stable answer IDs when shuffling. Do not add analytics, uploads,
+sign-in, secrets, or third-party requests without an explicit product decision.
+Run both test commands before opening a pull request.
 
 ## License and credits
 
 MIT; existing Microsoft copyright notices are retained. See [LICENSE.txt](LICENSE.txt)
-and [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). This is an independent,
-unofficial project, not a Microsoft or GitHub product. The quiz is for fun, not
-a real personality assessment.
+and [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). This independent,
+unofficial quiz is not a Microsoft or GitHub product and is not a scientific
+personality assessment.
