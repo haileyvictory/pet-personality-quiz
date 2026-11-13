@@ -158,7 +158,6 @@ figcaption > span:last-child { color: var(--muted); font-size: 12px; line-height
 .quiz-mascot { width: 100%; }
 .quiz-player { font-size: 23px; font-weight: 600; line-height: 1.2; letter-spacing: -.04em; text-align: center; align-self: center; overflow-wrap: anywhere; max-width: 100%; margin: 6px 0 32px; }
 .aside-note { font: 11px/1.7 var(--font-mono); color: var(--muted); margin: auto 0 0; padding-top: 40px; }
-.aside-spark { width: 29px; height: 29px; right: 28px; bottom: 38px; transform: rotate(15deg); }
 .question-panel { padding: 32px 38px; min-width: 0; }
 .quiz-heading { display: flex; align-items: center; justify-content: space-between; gap: 14px; }
 .quiz-heading .eyebrow { margin: 0; }
@@ -321,7 +320,7 @@ footer { border-top: 1px solid var(--line); font-size: 10px; color: var(--muted)
 	#quiz { grid-template-columns: minmax(0, 1fr); margin: 4px auto 12px; }
 	.quiz-aside { display: grid; grid-template-columns: 58px minmax(0, 1fr); gap: 5px 18px; padding: 20px 24px; border-right: 0; border-bottom: 1px solid var(--line); }
 	.quiz-aside > .eyebrow { grid-column: 2; grid-row: 1; margin: 0; align-self: end; font-size: 8px; }
-	.quiz-aside h2, .aside-note, .aside-spark { display: none; }
+	.quiz-aside h2, .aside-note { display: none; }
 	.avatar-visual { grid-column: 1; grid-row: 1 / 3; width: 58px; margin: 0; box-shadow: 0 0 0 1px var(--line), 0 0 0 5px #4daafc06; }
 	.quiz-player { grid-column: 2; grid-row: 2; text-align: left; align-self: start; font-size: 20px; margin: 0; }
 	.question-panel { padding: 26px 24px; }

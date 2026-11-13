@@ -79,6 +79,28 @@ test('dark workspace keeps text and keyboard controls readable across the quiz a
 	await checkContrast('.legal-heading h1, .legal-heading em, .legal-copy h2, .legal-copy p, .legal-copy a, .legal-body code');
 });
 
+test('quiz sidebar decoration never overlaps the advice text', async ({ page }) => {
+	await page.emulateMedia({ reducedMotion: 'reduce' });
+	await page.goto('/');
+	await page.locator('.start-button').click();
+	for (const width of [1440, 1024]) {
+		await page.setViewportSize({ width, height: 1000 });
+		await expect(page.locator('.aside-note')).toBeVisible();
+		const overlapping = await page.locator('.quiz-aside').evaluate(aside => {
+			const range = document.createRange();
+			range.selectNodeContents(aside.querySelector('.aside-note'));
+			const textRects = Array.from(range.getClientRects());
+			return Array.from(aside.querySelectorAll('[aria-hidden="true"]')).filter(decoration => {
+				if (!decoration.getClientRects().length) return false;
+				const rect = decoration.getBoundingClientRect();
+				return textRects.some(text => rect.left < text.right && rect.right > text.left &&
+					rect.top < text.bottom && rect.bottom > text.top);
+			}).map(decoration => decoration.className);
+		});
+		expect(overlapping, `Sidebar text at ${width}px`).toEqual([]);
+	}
+});
+
 test('workspace motion settles and reduced motion disables entrances and signal traces', async ({ page }) => {
 	await page.emulateMedia({ reducedMotion: 'no-preference' });
 	await page.goto('/');
