@@ -15,6 +15,7 @@ test('the human quiz is keyboard-accessible, private, and safely renders an opti
 	page.on('request', request => requests.push(request.url()));
 	await page.goto('/');
 	await expect(page).toHaveTitle(/Which Blobby are you/);
+	await expect(page.getByRole('link', { name: 'Source on GitHub' })).toHaveAttribute('href', 'https://github.com/haileyvictory/which-blobby-are-you');
 	await expect(page.locator('#species-options, input[name="species"]')).toHaveCount(0);
 	await expect(page.locator('.journey [aria-current="step"]')).toHaveAttribute('data-view', 'welcome');
 	const name = '<img src=x onerror=alert(1)>';
@@ -81,9 +82,10 @@ test('Home, Quiz, and Your Blobby preserve answers, support revision, and replay
 	const home = page.getByRole('button', { name: 'Home', exact: true });
 	const quiz = page.getByRole('button', { name: 'Quiz', exact: true });
 	const result = page.getByRole('button', { name: 'Your Blobby', exact: true });
+	await expect(page.locator('#quiz-name')).toHaveAttribute('placeholder', 'Blobby');
 	await expect(result).toBeDisabled();
 	await quiz.click();
-	await expect(page.locator('#quiz-player')).toHaveText('You, in blob form.');
+	await expect(page.locator('#quiz-player')).toHaveText('Blobby');
 	const prompts = [await page.locator('#question-title').textContent()];
 	await page.locator('#answers input[value$="-cozy"]').check();
 	await page.locator('#next').click();
@@ -112,13 +114,14 @@ test('Home, Quiz, and Your Blobby preserve answers, support revision, and replay
 	await expect(page.locator('#personality-title')).toHaveText('Cozy Blobby');
 	await expect(page.locator('#result-title')).toHaveText('Alex, meet your Blobby.');
 	await home.click();
-	await page.locator('#quiz-name').fill('');
+	await page.locator('#quiz-name').fill('   ');
 	await result.click();
 	await expect(page.locator('#result-title')).toBeFocused();
-	await expect(page.locator('#result-title')).toHaveText('Meet your inner Blobby.');
+	await expect(page.locator('#result-title')).toHaveText('Blobby, meet your Blobby.');
 	await expect(page.locator('#personality-title')).toHaveText('Cozy Blobby');
 	await quiz.click();
 	await expect(page.locator('#question-count')).toHaveText('Question 6 of 6');
+	await expect(page.locator('#quiz-player')).toHaveText('Blobby');
 	await expect(page.locator('#answers input[value$="-cozy"]')).toBeChecked();
 	await result.click();
 	await page.locator('#edit-answers').click();
@@ -213,6 +216,7 @@ test('the quiz and VS Code onboarding fit narrow screens and honor reduced motio
 	expect(await page.locator('.hero-card').evaluate(element => getComputedStyle(element).animationName)).toBe('none');
 	expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 	await page.getByRole('button', { name: 'Find my Blobby', exact: true }).click();
+	await expect(page.locator('#quiz-player')).toHaveText('Blobby');
 	await expect(page.locator('#quiz-mascot img')).toHaveAttribute('src', 'assets/blobby.png');
 	expect(await page.locator('.answer').first().evaluate(element => getComputedStyle(element).animationName)).toBe('none');
 	for (let index = 0; index < 6; index++) {
@@ -221,6 +225,7 @@ test('the quiz and VS Code onboarding fit narrow screens and honor reduced motio
 		await page.locator('#next').click();
 	}
 	expect(await page.locator('#result-art').evaluate(element => getComputedStyle(element).animationName)).toBe('none');
+	await expect(page.locator('#result-title')).toHaveText('Blobby, meet your Blobby.');
 	const download = page.getByRole('link', { name: 'Download VS Code', exact: true });
 	await download.scrollIntoViewIfNeeded();
 	await expect(download).toBeInViewport();

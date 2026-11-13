@@ -9,6 +9,7 @@
   },
   "scripts": {
     "build:art": "node scripts/build-blobby.cjs",
+    "build:talk": "node scripts/build-talk.cjs",
     "start": "node scripts/serve.cjs",
     "test": "node --test tests/quiz.test.cjs",
     "test:browser": "playwright test",

@@ -7,6 +7,7 @@
 (() => {
 	const { personalities, families, createQuiz, determinePersonality, quizLength } = BlobbyQuiz;
 	const byId = id => document.getElementById(id);
+	const displayName = () => byId('quiz-name').value.trim() || 'Blobby';
 	const views = ['welcome', 'quiz', 'result'];
 	let answers = [];
 	let questionIndex = 0;
@@ -85,7 +86,7 @@
 		byId('question-count').textContent = `Question ${questionIndex + 1} of ${questions.length}`;
 		byId('progress').value = questionIndex + 1;
 		byId('encouragement').textContent = encouragement[questionIndex];
-		byId('quiz-player').textContent = byId('quiz-name').value.trim() || 'You, in blob form.';
+		byId('quiz-player').textContent = displayName();
 		const fieldset = byId('answers');
 		fieldset.querySelectorAll('label').forEach(label => label.remove());
 		question.options.forEach((option, index) => {
@@ -117,8 +118,7 @@
 
 	function renderResult() {
 		const personality = determinePersonality(questions, answers);
-		const name = byId('quiz-name').value.trim();
-		byId('result-title').textContent = name ? `${name}, meet your Blobby.` : 'Meet your inner Blobby.';
+		byId('result-title').textContent = `${displayName()}, meet your Blobby.`;
 		byId('personality-title').textContent = personality.title;
 		byId('result-family').textContent = families[personality.family];
 		byId('personality-tagline').textContent = personality.tagline;

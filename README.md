@@ -7,10 +7,9 @@ questions from 72 original everyday scenarios to meet one of 24 colorful
 Blobby alter egos. Cozy, chaotic, thoughtful, extra: there is a tiny hat for that.
 No accounts, backend, API keys, analytics, or runtime dependencies.
 
-**[Find your Blobby](https://haileyvictory.github.io/pet-personality-quiz/)**
+**[Find your Blobby](https://haileyvictory.github.io/which-blobby-are-you/)**
 
-The existing repository and GitHub Pages URL are retained so shared links still
-work. The app is now Blobby-only, with no animal selection or pet-career results.
+Source: [haileyvictory/which-blobby-are-you](https://github.com/haileyvictory/which-blobby-are-you).
 
 ## Run locally
 
@@ -40,7 +39,7 @@ Changing an answer recalculates the result.
 Home returns to the setup without clearing answers. Quiz starts or resumes the
 current run. Your Blobby unlocks when all six questions have answers.
 Retake with fresh questions immediately starts a new run and keeps your optional
-name. Names are displayed as text, never HTML.
+name. Leaving the name blank uses Blobby. Names are displayed as text, never HTML.
 
 ## Design
 
@@ -109,6 +108,17 @@ The local art build combines the original sprite and official hat atlases with
 six palettes and original personality props on an eight-pixel grid. It checks
 for hard pixel edges and visible eyes. Runtime pages load the committed PNGs;
 no canvas, image service, or art build runs while taking the quiz.
+
+## Conference deck
+
+[ignite-talk.html](ignite-talk.html) includes a self-contained quiz demo and a
+printable presentation. After changing the quiz, refresh the embedded copy with:
+
+```sh
+npm run build:talk
+```
+
+The build bundles the current app and Blobby images without network requests.
 
 ## Privacy
 
